@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Traffic Signal Project</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Roboto:wght@400;500&display=swap');
+
+    .traffic-images {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      margin: 30px 0;
+      flex-wrap: wrap;
+    }
+
+    .traffic-images img {
+      width: 220px;
+      height: auto;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      transition: transform 0.3s ease;
+    }
+
+    .traffic-images img:hover {
+      transform: scale(1.05);
+    }
+
+    .project-detail {
+      font-family: 'Inter', 'Roboto', sans-serif;
+      font-weight: 400;
+      color: #333;
+      padding: 60px 10%;
+      background-color: #f7f9fb;
+    }
+
+    .project-detail h1 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 32px;
+      font-weight: 600;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .project-detail p {
+      font-size: 17px;
+      line-height: 1.75;
+      margin: 0 auto 30px;
+      max-width: 800px;
+      text-align: justify;
+      color: #444;
+    }
+
+    .project-detail a {
+      display: inline-block;
+      margin-top: 20px;
+      color: #5a63d8;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .project-detail a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <section class="project-detail">
+    <div class="container">
+      <h1>Traffic Signal State Machine</h1>
+      <div class="traffic-images">
+        <img src="cicuit.jpeg" alt="Traffic signal photo 1" />
+        <img src="Traffic light.jpeg" alt="Traffic signal photo 2" />
+      </div>
+      <p>
+        This project showcases a custom-built traffic signal controller implemented using a TTL-based finite state machine. Designed on a physical PCB, the system uses combinational and sequential logic to simulate red, yellow, and green traffic light transitions. A clock pulse triggers state changes, mimicking real-world intersection behavior.
+      </p>
+      <p>
+        The project helped reinforce key concepts in digital electronics, such as timing diagrams, state design, and logic gate configuration. This hands-on experience deepened my understanding of hardware implementation and system-level control, bridging theory and practice.
+      </p>
+      <a href="index.html">← Back to Projects</a>
+    </div>
+  </section>
+</body>
+</html>

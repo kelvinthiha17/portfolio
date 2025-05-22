@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Huffman Coding | Kelvin's Portfolio</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .project-detail {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 40px 20px;
+      font-family: 'Segoe UI', sans-serif;
+    }
+    .project-detail h1 {
+      font-size: 2.5em;
+      font-weight: bold;
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    .project-detail p {
+      font-size: 1.1em;
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+    .project-detail img {
+      display: block;
+      max-width: 100%;
+      height: auto;
+      margin: 20px auto;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .back-link {
+      display: inline-block;
+      margin-top: 30px;
+      text-decoration: none;
+      color: #5e3eff;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <section class="project-detail">
+    <h1>Huffman Coding (C++)</h1>
+
+    <p>This project is a file compression and decompression tool implemented in C++ using Huffman Coding — a well-known lossless data compression algorithm. The approach builds a binary tree based on character frequency, assigning shorter binary codes to more frequent characters to reduce file size.</p>
+
+    <img src="intialstring.png" alt="Initial string representation" />
+    <p><strong>Step 1:</strong> Initial string is prepared from user input.</p>
+
+    <img src="frequencystring.png" alt="Frequency of each character" />
+    <p><strong>Step 2:</strong> The frequency of each character is calculated.</p>
+
+    <img src="charactersorted.png" alt="Characters sorted by frequency" />
+    <p><strong>Step 3:</strong> Characters are sorted in ascending order of frequency for tree construction.</p>
+
+    <img src="gettingsum.png" alt="Tree construction from frequencies" />
+    <p><strong>Step 4:</strong> Nodes with the lowest frequencies are repeatedly merged to build the Huffman tree.</p>
+
+    <img src="decoding.png" alt="Decoding traversal of the Huffman tree" />
+    <p><strong>Step 5:</strong> The tree is traversed using 0s and 1s to decode each character. For example, to decode 'D', we follow 1 → 0 → 1.</p>
+    <p>This project deepened my understanding of tree-based data structures like binary trees, and file handling in C++.</p>
+    <p><strong>Technologies Used:</strong> C++, Data structures like priority_queue, unordered_map, file I/O, binary tree structures</p>
+
+    <a href="index.html" class="back-link">← Back to Home</a>
+  </section>
+</body>
+</html>

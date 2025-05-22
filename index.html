@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kelvin | Portfolio</title>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Poppins:wght@400;700&family=Work+Sans:wght@400;700&display=swap" rel="stylesheet">
+
+    <!-- AOS (Animate On Scroll) CSS -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+    <!-- Your Main CSS -->
+    <link rel="stylesheet" href="style.css" />
+  </head>
+
+  <body>
+
+    <!-- INTRODUCTION SECTION -->
+    <header class="hero">
+      <div class="top-bar">
+        <h1 class="logo">⚙️ Kelvin Ha</h1>
+        <div class="top-actions">
+          <button class="dark-toggle" onclick="toggleDarkMode()">🌙 Dark Mode</button>
+          <button class="menu-btn" onclick="toggleMenu()">Menu ☰</button>
+        </div>
+      </div>      
+      <p class="tagline">Welcome to my personal website which tells you about my projects and my experience</p>
+
+      <div id="dropdown" class="dropdown hidden">
+        <a href="contact.html">Contact Info</a>
+      </div>
+    </header>
+
+    <!-- ABOUT ME SECTION -->
+    <section class="about">
+      <h2 data-aos="fade-up">About Me</h2>
+      <div class="about-content">
+        <div class="about-text" data-aos="fade-right">
+          <p>I'm an international student from Burma (Myanmar), currently pursuing a degree in Computer Engineering at Rutgers University–New Brunswick.</p>
+          <br>
+          <p>I'm passionate about electronics, programming, and finding practical solutions to real-world problems. My interests include circuit design, system-level thinking, and working with languages like Java, C++, and HTML.</p>
+          <br>
+          <p>My journey into hardware began during my senior year of high school when I became fascinated with building custom computers from scratch. Around the same time, I also started learning Python, which sparked my long-term interest in coding and software development.</p>
+          <br>
+          <p>Outside of academics, I enjoy playing soccer, tennis, and volleyball, watching Formula 1, and tinkering with cars in my free time.</p>
+          <p>Feel free to explore my site and check out the projects I've been working on!</p>
+        </div>
+        <div class="about-img" data-aos="fade-left">
+          <img src="PFP.JPG" alt="Kelvin's photo" />
+        </div>
+      </div>
+    </section>
+
+    <!-- PROJECTS SECTION -->
+    <section id="projects" class="projects">
+      <h2 data-aos="fade-up">Projects</h2>
+      <div class="project-grid">
+        <a href="project1.html" class="project-card" data-aos="zoom-in">
+          <img src="Huffman.jpg" alt="Huffman Coding project image">
+          <h3>Huffman Coding (C++)</h3>
+          <p>Compresses and decompresses text files using binary trees and priority queues.</p>
+        </a>
+        
+        <a href="project-calendar.html" class="project-card" data-aos="zoom-in">
+          <img src="calendar.jpg" alt="Calendar Generator project image">
+          <h3>Yearly Calendar Generator (Java)</h3>
+          <p>Generates yearly calendars dynamically, accounting for leap years and layout formatting.</p>
+        </a>
+
+        <a href="project-traffic.html" class="project-card" data-aos="zoom-in">
+          <img src="Traffic.jpg" alt="Traffic signal project">
+          <p class="project-type">Traffic signal project</p>
+          <h3>Traffic Signal State Machine</h3>
+          <p>Designed a PCB-based traffic light controller using TTL logic and a custom clock.</p>
+        </a>
+      </div>
+    </section>
+
+    <!-- JS SCRIPTS -->
+    <script>
+      function toggleMenu() {
+        const menu = document.getElementById("dropdown");
+        menu.classList.toggle("hidden");
+      }
+    </script>
+
+    <!-- Animation on Scroll -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+      AOS.init({
+        duration: 800,
+        once: true
+      });
+    </script>
+<!--Contact button section-->
+<section class="contact-section">
+  <div class="contact-container">
+    <div class="contact-text">
+      <h2>Get in Touch</h2>
+      <p>Feel free to reach out to me with the following contact information.</p>
+
+      <form action="https://formspree.io/f/mdkgvalk" method="POST" class="contact-form">
+        <label for="name">Name</label>
+        <input type="text" id="name" name="name" placeholder="Your name" required>
+      
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" placeholder="Your email" required>
+      
+        <label for="message">Message</label>
+        <textarea id="message" name="message" placeholder="Write your message here..." rows="5" required></textarea>
+      
+        <button type="submit">Send Message</button>
+      </form>
+    </div>
+
+    <div class="contact-info">
+      <ul>
+        <li><span class="icon">🏠</span> Rutgers University–New Brunswick<br />New Jersey, 08901</li>
+        <li><span class="icon">📞</span> 9179998793</li>
+        <li><span class="icon">✉️</span> kelvinthi.ha@rutgers.edu</li>
+        <li><span class="icon">💼</span> <a href="https://www.linkedin.com/in/kyawha" target="_blank">LinkedIn:kyawha</a></li>
+<li><span class="icon">💻</span> <a href="https://github.com/kelvinthiha17" target="_blank">GitHub: kelvinthiha17</a></li>
+
+      </ul>
+    </div>
+  </div>
+</section>
+<!--DarkMode-->
+<script>
+  function toggleDarkMode() {
+    document.body.classList.toggle("dark-mode");
+  }
+</script>
+
+  </body>
+</html>

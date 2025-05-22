@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Yearly Calendar Generator | Kelvin's Portfolio</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    body {
+      font-size: 1.15rem;
+      line-height: 1.7;
+    }
+
+    .project-detail .container {
+      max-width: 800px;
+      margin: auto;
+      padding: 40px 20px;
+    }
+
+    .project-image {
+      max-width: 400px;
+      width: 90%;
+      height: auto;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+      margin-bottom: 8px;
+    }
+
+    .image-caption {
+      font-style: italic;
+      font-size: 1.05rem;
+      margin-bottom: 32px;
+      color: #555;
+    }
+
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 20px;
+    }
+
+    p {
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <section class="project-detail">
+    <div class="container">
+      <h1>Yearly Calendar Generator (Java)</h1>
+
+      <p>This Java project generates a full calendar for any given year, including accurate leap year calculations and proper weekday alignment. The program dynamically builds each month and organizes days to reflect real-world layouts.</p>
+
+      <div style="text-align: center;">
+        <img src="calendarinput.png" alt="Calendar app input screen" class="project-image">
+        <div class="image-caption">User interface where the year is entered.</div>
+      </div>
+
+      <p>Once the user enters a valid year and clicks "Generate Calendar", the app calculates the first day of each month and determines if the year is a leap year. It then displays each month in a structured and readable format.</p>
+
+      <div style="text-align: center;">
+        <img src="calendaroutput.png" alt="Generated yearly calendar" class="project-image">
+        <div class="image-caption">Generated calendar displaying correct monthly layouts.</div>
+      </div>
+
+      <p><strong>Technologies Used:</strong> Java, control structures, arrays, modular arithmetic, Swing GUI</p>
+
+      <a href="index.html">← Back to Home</a>
+    </div>
+  </section>
+
+</body>
+</html>
