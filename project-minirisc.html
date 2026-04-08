@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MiniRISC16 Processor — Kelvin Ha</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #030712; --bg2: #0d1117; --card: #0f1623;
+      --cb: rgba(56,189,248,0.12); --ink: #e2e8f0; --muted: #8892a4;
+      --accent: #38bdf8; --accent2: #a78bfa; --accent3: #34d399;
+      --glow: rgba(56,189,248,0.22);
+      --code-bg: #010b14;
+    }
+    body.light {
+      --bg: #f8fafc; --bg2: #f1f5f9; --card: #ffffff;
+      --cb: rgba(56,189,248,0.18); --ink: #0f172a; --muted: #64748b;
+      --glow: rgba(56,189,248,0.10); --code-bg: #0d1117;
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--bg); color: var(--ink);
+      line-height: 1.65; transition: background 0.3s, color 0.3s;
+    }
+    h1,h2,h3 { font-family: 'Space Grotesk', Inter, sans-serif; font-weight: 700; line-height: 1.2; }
+    .container { max-width: 860px; margin: 0 auto; padding: 0 24px; }
+    .gt {
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+
+    /* ===== HEADER ===== */
+    .site-header {
+      position: sticky; top: 0; z-index: 50;
+      border-bottom: 1px solid rgba(56,189,248,0.08);
+      background: rgba(3,7,18,0.85);
+      backdrop-filter: blur(18px) saturate(180%);
+    }
+    body.light .site-header { background: rgba(248,250,252,0.88); }
+    .hdr { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 13px 0; }
+    .brand { font-family: 'JetBrains Mono', monospace; font-size: 17px; font-weight: 500; text-decoration: none; color: var(--accent); }
+    .brand em { color: var(--ink); font-style: normal; }
+    .btn { display: inline-flex; align-items: center; gap: 6px; padding: 7px 16px; border-radius: 10px; font-size: 13px; font-weight: 600; cursor: pointer; text-decoration: none; border: none; font-family: inherit; transition: all 0.2s ease; }
+    .btn-g { background: rgba(56,189,248,0.08); border: 1px solid rgba(56,189,248,0.22); color: var(--accent); }
+    .btn-g:hover { background: rgba(56,189,248,0.16); }
+
+    /* ===== HERO ===== */
+    .proj-hero { padding: 64px 0 48px; position: relative; overflow: hidden; }
+    .proj-hero::before {
+      content: ''; position: absolute; inset: 0;
+      background-image: radial-gradient(rgba(56,189,248,0.1) 1px, transparent 1px);
+      background-size: 28px 28px;
+      mask-image: radial-gradient(ellipse 70% 80% at 50% 50%, black 30%, transparent 100%);
+      -webkit-mask-image: radial-gradient(ellipse 70% 80% at 50% 50%, black 30%, transparent 100%);
+      pointer-events: none;
+    }
+    .back-btn { display: inline-flex; align-items: center; gap: 6px; color: var(--muted); text-decoration: none; font-size: 13px; font-family: 'JetBrains Mono', monospace; margin-bottom: 24px; transition: color 0.18s; }
+    .back-btn:hover { color: var(--accent); }
+    .slabel { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 2.5px; text-transform: uppercase; color: var(--accent); margin-bottom: 10px; }
+    .proj-title { font-size: clamp(30px, 5vw, 52px); letter-spacing: -1.8px; margin-bottom: 16px; }
+    .proj-meta { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 32px; }
+    .tag { background: rgba(56,189,248,0.07); border: 1px solid rgba(56,189,248,0.2); padding: 4px 12px; border-radius: 99px; font-size: 12px; color: var(--accent); font-family: 'JetBrains Mono', monospace; }
+
+    /* ===== BODY ===== */
+    .proj-body { padding: 0 0 88px; }
+    .proj-body p { color: var(--muted); font-size: 16px; line-height: 1.82; margin-bottom: 20px; }
+    .proj-body strong { color: var(--ink); }
+    .section-h2 { font-size: clamp(20px, 3vw, 28px); letter-spacing: -0.6px; margin: 48px 0 20px; }
+
+    /* ===== ARCHITECTURE DIAGRAM ===== */
+    .arch-diagram {
+      background: var(--code-bg);
+      border: 1px solid var(--cb);
+      border-radius: 16px;
+      padding: 32px 24px;
+      margin: 28px 0;
+      overflow-x: auto;
+    }
+    .arch-flow {
+      display: flex; align-items: center; justify-content: center;
+      gap: 0; flex-wrap: nowrap; min-width: 560px;
+    }
+    .arch-box {
+      background: var(--card);
+      border: 1px solid rgba(56,189,248,0.25);
+      border-radius: 10px;
+      padding: 10px 14px;
+      text-align: center;
+      min-width: 90px;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .arch-box:hover { border-color: var(--accent); box-shadow: 0 0 16px var(--glow); }
+    .arch-box-name { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--accent); font-weight: 500; }
+    .arch-box-sub  { font-size: 10px; color: var(--muted); margin-top: 3px; font-family: 'JetBrains Mono', monospace; }
+    .arch-arrow {
+      display: flex; align-items: center;
+      color: rgba(56,189,248,0.4);
+      font-size: 18px; padding: 0 6px;
+      flex-shrink: 0;
+    }
+    .arch-arrow-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px; color: var(--muted);
+      text-align: center; display: block; margin-top: 4px;
+    }
+    .arch-arrow-wrap { display: flex; flex-direction: column; align-items: center; }
+
+    /* Feedback arrow (writeback) */
+    .arch-feedback {
+      display: flex; justify-content: center;
+      margin-top: 8px; font-family: 'JetBrains Mono', monospace;
+      font-size: 11px; color: var(--muted);
+      gap: 6px; align-items: center;
+    }
+    .arch-feedback-line {
+      height: 1px; background: rgba(56,189,248,0.25);
+      flex: 1; max-width: 200px;
+    }
+
+    /* ===== MODULE CARDS ===== */
+    .module-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 24px 0; }
+    @media (max-width: 600px) { .module-grid { grid-template-columns: 1fr; } }
+    .module-card {
+      background: var(--card); border: 1px solid var(--cb);
+      border-radius: 14px; padding: 18px;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .module-card:hover { border-color: rgba(56,189,248,0.3); box-shadow: 0 0 18px var(--glow); }
+    .module-name { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--accent); font-weight: 500; margin-bottom: 6px; }
+    .module-file { font-size: 11px; color: rgba(56,189,248,0.45); font-family: 'JetBrains Mono', monospace; margin-bottom: 10px; }
+    .module-desc { font-size: 13px; color: var(--muted); line-height: 1.6; }
+    .module-desc strong { color: var(--ink); }
+
+    /* ===== INSTRUCTION FORMAT ===== */
+    .instr-diagram {
+      background: var(--code-bg);
+      border: 1px solid var(--cb);
+      border-radius: 16px;
+      padding: 28px 24px;
+      margin: 24px 0;
+      overflow-x: auto;
+    }
+    .instr-bits {
+      display: flex; gap: 3px; min-width: 480px;
+    }
+    .bit-field {
+      flex: 1; border-radius: 8px; padding: 10px 8px;
+      text-align: center; border: 1px solid;
+      min-width: 40px;
+    }
+    .bf-opcode { background: rgba(167,139,250,0.12); border-color: rgba(167,139,250,0.3); }
+    .bf-rd     { background: rgba(56,189,248,0.10);  border-color: rgba(56,189,248,0.3); }
+    .bf-rs     { background: rgba(52,211,153,0.10);  border-color: rgba(52,211,153,0.3); }
+    .bf-rt     { background: rgba(251,146,60,0.10);  border-color: rgba(251,146,60,0.3); }
+    .bf-imm    { background: rgba(248,113,113,0.10); border-color: rgba(248,113,113,0.3); }
+    .bf-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px; font-weight: 500;
+      margin-bottom: 4px;
+    }
+    .bf-opcode .bf-label { color: #a78bfa; }
+    .bf-rd     .bf-label { color: var(--accent); }
+    .bf-rs     .bf-label { color: var(--accent3); }
+    .bf-rt     .bf-label { color: #fb923c; }
+    .bf-imm    .bf-label { color: #f87171; }
+    .bf-bits { font-size: 10px; color: var(--muted); font-family: 'JetBrains Mono', monospace; }
+    .instr-legend {
+      display: flex; flex-wrap: wrap; gap: 12px;
+      margin-top: 16px; font-size: 12px;
+      font-family: 'JetBrains Mono', monospace; color: var(--muted);
+    }
+    .instr-example {
+      margin-top: 16px; padding-top: 16px;
+      border-top: 1px solid rgba(56,189,248,0.08);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px; color: var(--muted);
+    }
+    .instr-example span { color: var(--accent); }
+
+    /* ===== CODE BLOCKS ===== */
+    .code-block {
+      background: var(--code-bg);
+      border: 1px solid var(--cb);
+      border-radius: 14px;
+      overflow: hidden;
+      margin: 20px 0;
+    }
+    .code-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 10px 16px;
+      border-bottom: 1px solid rgba(56,189,248,0.08);
+      background: rgba(56,189,248,0.03);
+    }
+    .code-filename {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px; color: var(--accent);
+    }
+    .code-dots { display: flex; gap: 6px; }
+    .code-dot { width: 10px; height: 10px; border-radius: 50%; }
+    .cd-r { background: #ff5f57; } .cd-y { background: #febc2e; } .cd-g { background: #28c840; }
+    pre {
+      padding: 18px; overflow-x: auto;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px; line-height: 1.75;
+      color: #abb2bf;
+      margin: 0;
+    }
+    /* Syntax colors */
+    .kw  { color: #c792ea; }
+    .fn  { color: #82aaff; }
+    .num { color: #f78c6c; }
+    .cm  { color: #4a5568; font-style: italic; }
+    .op  { color: var(--accent); }
+    .str { color: #c3e88d; }
+    .io  { color: var(--accent3); }
+
+    /* ===== ALU TABLE ===== */
+    .alu-table {
+      width: 100%; border-collapse: collapse;
+      margin: 20px 0; font-size: 14px;
+    }
+    .alu-table th {
+      text-align: left; padding: 10px 14px;
+      border-bottom: 1px solid rgba(56,189,248,0.15);
+      color: var(--muted); font-weight: 600;
+      font-size: 12px; font-family: 'JetBrains Mono', monospace;
+      text-transform: uppercase; letter-spacing: 1px;
+    }
+    .alu-table td {
+      padding: 10px 14px;
+      border-bottom: 1px solid rgba(56,189,248,0.06);
+      font-family: 'JetBrains Mono', monospace; font-size: 13px;
+    }
+    .alu-table tr:last-child td { border-bottom: none; }
+    .alu-table tr:hover td { background: rgba(56,189,248,0.04); }
+    .op-code { color: #f78c6c; }
+    .op-name { color: var(--accent); }
+    .op-expr { color: var(--accent3); }
+
+    /* ===== FOOTER ===== */
+    .footer { border-top: 1px solid rgba(56,189,248,0.08); padding: 20px 0; text-align: center; color: var(--muted); font-size: 13px; font-family: 'JetBrains Mono', monospace; }
+    .footer a { color: var(--accent); text-decoration: none; }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="container hdr">
+      <a href="index.html" class="brand">&lt;<em>KH</em>/&gt;</a>
+      <button id="themeToggle" class="btn btn-g" aria-label="Toggle theme">☀</button>
+    </div>
+  </header>
+
+  <section class="proj-hero">
+    <div class="container">
+      <a href="index.html" class="back-btn">← Back to Projects</a>
+      <div class="slabel">// Verilog · RTL Design · CPU Architecture</div>
+      <h1 class="proj-title">MiniRISC16 <span class="gt">Processor</span></h1>
+      <div class="proj-meta">
+        <span class="tag">Verilog</span>
+        <span class="tag">RTL Design</span>
+        <span class="tag">CPU Architecture</span>
+        <span class="tag">Icarus Verilog</span>
+        <span class="tag">GTKWave</span>
+        <span class="tag">16-bit</span>
+      </div>
+    </div>
+  </section>
+
+  <div class="proj-body">
+    <div class="container">
+
+      <p>
+        A fully functional <strong>16-bit RISC processor</strong> designed from scratch in Verilog.
+        The architecture follows a classic single-cycle datapath — each instruction completes in one clock
+        cycle, flowing through the program counter, instruction memory, decoder, register file, and ALU.
+        All modules were individually unit-tested and verified together using
+        <strong>Icarus Verilog</strong> simulation with <strong>GTKWave</strong> waveform analysis.
+      </p>
+
+      <!-- Architecture Diagram -->
+      <h2 class="section-h2">// <span class="gt">architecture</span></h2>
+
+      <div class="arch-diagram">
+        <div class="arch-flow">
+          <div class="arch-box">
+            <div class="arch-box-name">PC</div>
+            <div class="arch-box-sub">pc.v</div>
+          </div>
+          <div class="arch-arrow-wrap">
+            <div class="arch-arrow">→</div>
+            <span class="arch-arrow-label">addr[15:0]</span>
+          </div>
+          <div class="arch-box">
+            <div class="arch-box-name">IMEM</div>
+            <div class="arch-box-sub">imem.v</div>
+          </div>
+          <div class="arch-arrow-wrap">
+            <div class="arch-arrow">→</div>
+            <span class="arch-arrow-label">instr[15:0]</span>
+          </div>
+          <div class="arch-box">
+            <div class="arch-box-name">Decoder</div>
+            <div class="arch-box-sub">decoder.v</div>
+          </div>
+          <div class="arch-arrow-wrap">
+            <div class="arch-arrow">→</div>
+            <span class="arch-arrow-label">rs, rt, rd</span>
+          </div>
+          <div class="arch-box">
+            <div class="arch-box-name">RegFile</div>
+            <div class="arch-box-sub">regfile8x16.v</div>
+          </div>
+          <div class="arch-arrow-wrap">
+            <div class="arch-arrow">→</div>
+            <span class="arch-arrow-label">a, b</span>
+          </div>
+          <div class="arch-box">
+            <div class="arch-box-name">ALU</div>
+            <div class="arch-box-sub">alu16.v</div>
+          </div>
+        </div>
+        <div class="arch-feedback">
+          <div class="arch-feedback-line"></div>
+          <span>result writeback → rd</span>
+          <div class="arch-feedback-line"></div>
+        </div>
+      </div>
+
+      <!-- Module breakdown -->
+      <div class="module-grid">
+        <div class="module-card">
+          <div class="module-name">Program Counter</div>
+          <div class="module-file">pc.v</div>
+          <div class="module-desc">Resets to <strong>0x0000</strong> on reset, increments by 1 each clock edge. Drives the instruction fetch address.</div>
+        </div>
+        <div class="module-card">
+          <div class="module-name">Instruction Memory</div>
+          <div class="module-file">imem.v</div>
+          <div class="module-desc"><strong>256 × 16-bit</strong> ROM. Combinationally outputs the instruction at the address from the PC. Pre-loaded with a test program.</div>
+        </div>
+        <div class="module-card">
+          <div class="module-name">Instruction Decoder</div>
+          <div class="module-file">decoder.v</div>
+          <div class="module-desc">Splits the 16-bit instruction word into <strong>opcode</strong>, <strong>rd</strong>, <strong>rs</strong>, <strong>rt</strong>, and <strong>imm</strong> fields using bit slicing.</div>
+        </div>
+        <div class="module-card">
+          <div class="module-name">Register File</div>
+          <div class="module-file">regfile8x16.v</div>
+          <div class="module-desc"><strong>8 registers × 16 bits</strong>. Two combinational read ports (rs, rt). One synchronous write port (rd) — writes on positive clock edge.</div>
+        </div>
+        <div class="module-card">
+          <div class="module-name">ALU</div>
+          <div class="module-file">alu16.v</div>
+          <div class="module-desc">16-bit combinational ALU. Supports <strong>ADD, SUB, AND, OR, XOR</strong> selected by a 3-bit opcode. Includes a zero flag for future branch instructions.</div>
+        </div>
+        <div class="module-card">
+          <div class="module-name">Top-Level CPU</div>
+          <div class="module-file">cpu.v</div>
+          <div class="module-desc">Wires all five modules together. ALU result feeds directly back into the register file write port — single-cycle, no pipeline stalls.</div>
+        </div>
+      </div>
+
+      <!-- Instruction Format -->
+      <h2 class="section-h2">// <span class="gt">instruction format</span></h2>
+      <p>All instructions are 16 bits wide. The high 4 bits are the opcode; register fields are 3 bits each.</p>
+
+      <div class="instr-diagram">
+        <div class="instr-bits">
+          <div class="bit-field bf-opcode" style="flex:4">
+            <div class="bf-label">opcode</div>
+            <div class="bf-bits">[15:12]</div>
+          </div>
+          <div class="bit-field bf-rd" style="flex:3">
+            <div class="bf-label">rd</div>
+            <div class="bf-bits">[11:9]</div>
+          </div>
+          <div class="bit-field bf-rs" style="flex:3">
+            <div class="bf-label">rs</div>
+            <div class="bf-bits">[8:6]</div>
+          </div>
+          <div class="bit-field bf-rt" style="flex:3">
+            <div class="bf-label">rt</div>
+            <div class="bf-bits">[5:3]</div>
+          </div>
+          <div class="bit-field bf-imm" style="flex:3">
+            <div class="bf-label">—</div>
+            <div class="bf-bits">[2:0]</div>
+          </div>
+        </div>
+        <div class="instr-legend">
+          <span style="color:#a78bfa">opcode [15:12]</span>
+          <span style="color:var(--accent)">rd [11:9] — destination register</span>
+          <span style="color:var(--accent3)">rs [8:6] — source register 1</span>
+          <span style="color:#fb923c">rt [5:3] — source register 2</span>
+          <span style="color:var(--muted)">imm [5:0] — immediate (I-type, overlaps rt)</span>
+        </div>
+        <div class="instr-example">
+          Example: <span>0000_011_001_010_000</span> → ADD R3, R1, R2 &nbsp;|&nbsp;
+          <span>0001_001_000_000101</span> → ADDI R1, R0, 5
+        </div>
+      </div>
+
+      <!-- ALU -->
+      <h2 class="section-h2">// <span class="gt">ALU operations</span></h2>
+
+      <table class="alu-table">
+        <thead>
+          <tr>
+            <th>alu_op</th>
+            <th>Operation</th>
+            <th>Expression</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="op-code">3'b000</td><td class="op-name">ADD</td><td class="op-expr">a + b</td><td style="color:var(--muted)">16-bit addition</td></tr>
+          <tr><td class="op-code">3'b001</td><td class="op-name">SUB</td><td class="op-expr">a - b</td><td style="color:var(--muted)">16-bit subtraction</td></tr>
+          <tr><td class="op-code">3'b010</td><td class="op-name">AND</td><td class="op-expr">a &amp; b</td><td style="color:var(--muted)">bitwise AND</td></tr>
+          <tr><td class="op-code">3'b011</td><td class="op-name">OR</td> <td class="op-expr">a | b</td><td style="color:var(--muted)">bitwise OR</td></tr>
+          <tr><td class="op-code">3'b100</td><td class="op-name">XOR</td><td class="op-expr">a ^ b</td><td style="color:var(--muted)">bitwise XOR</td></tr>
+        </tbody>
+      </table>
+
+      <!-- Code: ALU -->
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-filename">alu16.v</span>
+          <div class="code-dots"><div class="code-dot cd-r"></div><div class="code-dot cd-y"></div><div class="code-dot cd-g"></div></div>
+        </div>
+        <pre><span class="cm">// 16-bit ALU for MiniRISC16</span>
+<span class="kw">module</span> <span class="fn">alu16</span>(
+    <span class="io">input</span>  <span class="kw">wire</span> [<span class="num">15</span>:<span class="num">0</span>] a,
+    <span class="io">input</span>  <span class="kw">wire</span> [<span class="num">15</span>:<span class="num">0</span>] b,
+    <span class="io">input</span>  <span class="kw">wire</span> [<span class="num">2</span>:<span class="num">0</span>]  alu_op,
+    <span class="io">output</span> <span class="kw">reg</span>  [<span class="num">15</span>:<span class="num">0</span>] result
+);
+    <span class="kw">always</span> @(*) <span class="kw">begin</span>
+        <span class="kw">case</span>(alu_op)
+            <span class="num">3'b000</span>: result = a + b;  <span class="cm">// ADD</span>
+            <span class="num">3'b001</span>: result = a - b;  <span class="cm">// SUB</span>
+            <span class="num">3'b010</span>: result = a &amp; b;  <span class="cm">// AND</span>
+            <span class="num">3'b011</span>: result = a | b;  <span class="cm">// OR</span>
+            <span class="num">3'b100</span>: result = a ^ b;  <span class="cm">// XOR</span>
+            <span class="kw">default</span>: result = <span class="num">16'b0</span>;
+        <span class="kw">endcase</span>
+    <span class="kw">end</span>
+<span class="kw">endmodule</span></pre>
+      </div>
+
+      <!-- Code: Decoder -->
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-filename">decoder.v</span>
+          <div class="code-dots"><div class="code-dot cd-r"></div><div class="code-dot cd-y"></div><div class="code-dot cd-g"></div></div>
+        </div>
+        <pre><span class="kw">module</span> <span class="fn">decoder</span>(
+    <span class="io">input</span>  <span class="kw">wire</span> [<span class="num">15</span>:<span class="num">0</span>] instruction,
+    <span class="io">output</span> <span class="kw">wire</span> [<span class="num">3</span>:<span class="num">0</span>]  opcode,
+    <span class="io">output</span> <span class="kw">wire</span> [<span class="num">2</span>:<span class="num">0</span>]  rd, rs, rt,
+    <span class="io">output</span> <span class="kw">wire</span> [<span class="num">5</span>:<span class="num">0</span>]  imm
+);
+    <span class="kw">assign</span> opcode = instruction[<span class="num">15</span>:<span class="num">12</span>]; <span class="cm">// bits 15–12 → opcode</span>
+    <span class="kw">assign</span> rd     = instruction[<span class="num">11</span>:<span class="num">9</span>];  <span class="cm">// bits 11–9  → destination reg</span>
+    <span class="kw">assign</span> rs     = instruction[<span class="num">8</span>:<span class="num">6</span>];   <span class="cm">// bits 8–6   → source reg 1</span>
+    <span class="kw">assign</span> rt     = instruction[<span class="num">5</span>:<span class="num">3</span>];   <span class="cm">// bits 5–3   → source reg 2</span>
+    <span class="kw">assign</span> imm    = instruction[<span class="num">5</span>:<span class="num">0</span>];   <span class="cm">// bits 5–0   → immediate</span>
+<span class="kw">endmodule</span></pre>
+      </div>
+
+      <!-- Code: Register File -->
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-filename">regfile8x16.v</span>
+          <div class="code-dots"><div class="code-dot cd-r"></div><div class="code-dot cd-y"></div><div class="code-dot cd-g"></div></div>
+        </div>
+        <pre><span class="cm">// 8 registers × 16 bits</span>
+<span class="kw">module</span> <span class="fn">regfile8x16</span>( clk, reg_write, rs, rt, rd, write_data,
+                     read_data1, read_data2 );
+
+    <span class="kw">reg</span> [<span class="num">15</span>:<span class="num">0</span>] registers [<span class="num">7</span>:<span class="num">0</span>];
+
+    <span class="cm">// Combinational reads — instant, no clock needed</span>
+    <span class="kw">assign</span> read_data1 = registers[rs];
+    <span class="kw">assign</span> read_data2 = registers[rt];
+
+    <span class="cm">// Synchronous write — only on rising clock edge</span>
+    <span class="kw">always</span> @(<span class="kw">posedge</span> clk) <span class="kw">begin</span>
+        <span class="kw">if</span> (reg_write)
+            registers[rd] <= write_data;
+    <span class="kw">end</span>
+<span class="kw">endmodule</span></pre>
+      </div>
+
+      <!-- Code: Top-level -->
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-filename">cpu.v — top-level wiring</span>
+          <div class="code-dots"><div class="code-dot cd-r"></div><div class="code-dot cd-y"></div><div class="code-dot cd-g"></div></div>
+        </div>
+        <pre><span class="cm">// All five modules wired together</span>
+<span class="fn">pc</span>          pc_unit   ( .clk(clk), .reset(reset), .pc_out(pc_out) );
+<span class="fn">imem</span>        imem_unit ( .addr(pc_out), .instruction(instruction) );
+<span class="fn">decoder</span>     dec_unit  ( .instruction(instruction), .opcode(alu_op),
+                        .rd(rd), .rs(rs), .rt(rt) );
+<span class="fn">regfile8x16</span> rf_unit   ( .clk(clk), .rs(rs), .rt(rt), .rd(rd),
+                        .write_data(alu_result), .reg_write(<span class="num">1'b1</span>),
+                        .read_data1(reg_data1), .read_data2(reg_data2) );
+<span class="fn">alu16</span>       alu_unit  ( .a(reg_data1), .b(reg_data2),
+                        .alu_op(alu_op), .result(alu_result) );</pre>
+      </div>
+
+      <!-- Verification -->
+      <h2 class="section-h2">// <span class="gt">testing & verification</span></h2>
+      <p>
+        Each module has its own testbench. The ALU testbench exercises all five operations including a
+        <strong>SUB zero case</strong> (7 − 7 = 0) to verify the zero flag. The register file testbench
+        checks concurrent read/write behaviour — writing to R4 and R2 while simultaneously reading both
+        ports. The top-level <code style="font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--accent)">cpu_tb.v</code>
+        runs a full instruction sequence through the assembled datapath and dumps a <strong>VCD waveform</strong>
+        for analysis in GTKWave.
+      </p>
+      <p>
+        The test program encoded in instruction memory executes: <strong>ADDI R1, R0, 5</strong> →
+        <strong>ADDI R2, R0, 3</strong> → <strong>ADD R3, R1, R2</strong> → <strong>SUB R4, R3, R2</strong>,
+        verifying the full fetch-decode-execute path from PC through writeback.
+      </p>
+
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="container">© <span id="year"></span> <a href="index.html">Kelvin Ha</a></div>
+  </footer>
+
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+    const tt = document.getElementById('themeToggle');
+    const saved = localStorage.getItem('kelvin_theme');
+    if (saved === 'light') { document.body.classList.add('light'); tt.textContent = '🌙'; }
+    else { tt.textContent = '☀'; }
+    tt.addEventListener('click', () => {
+      document.body.classList.toggle('light');
+      const isLight = document.body.classList.contains('light');
+      localStorage.setItem('kelvin_theme', isLight ? 'light' : 'dark');
+      tt.textContent = isLight ? '🌙' : '☀';
+    });
+  </script>
+</body>
+</html>

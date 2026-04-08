@@ -2,86 +2,226 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Traffic Signal Project</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Traffic Signal FSM — Kelvin Ha</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Roboto:wght@400;500&display=swap');
-
-    .traffic-images {
-      display: flex;
-      gap: 16px;
-      justify-content: center;
-      margin: 30px 0;
-      flex-wrap: wrap;
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #030712; --bg2: #0d1117; --card: #0f1623;
+      --cb: rgba(56,189,248,0.12); --ink: #e2e8f0; --muted: #8892a4;
+      --accent: #38bdf8; --accent2: #a78bfa; --accent3: #34d399;
+      --glow: rgba(56,189,248,0.22);
+    }
+    body.light {
+      --bg: #f8fafc; --bg2: #f1f5f9; --card: #ffffff;
+      --cb: rgba(56,189,248,0.18); --ink: #0f172a; --muted: #64748b;
+      --glow: rgba(56,189,248,0.10);
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--bg); color: var(--ink);
+      line-height: 1.65; transition: background 0.3s, color 0.3s;
+    }
+    h1,h2,h3 { font-family: 'Space Grotesk', Inter, sans-serif; font-weight: 700; line-height: 1.2; }
+    .container { max-width: 820px; margin: 0 auto; padding: 0 24px; }
+    .gt {
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
     }
 
-    .traffic-images img {
-      width: 220px;
-      height: auto;
-      border-radius: 10px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-      transition: transform 0.3s ease;
+    /* Header */
+    .site-header {
+      position: sticky; top: 0; z-index: 50;
+      border-bottom: 1px solid rgba(56,189,248,0.08);
+      background: rgba(3,7,18,0.85);
+      backdrop-filter: blur(18px) saturate(180%);
+    }
+    body.light .site-header { background: rgba(248,250,252,0.88); }
+    .hdr {
+      display: flex; align-items: center;
+      justify-content: space-between; gap: 16px; padding: 13px 0;
+    }
+    .brand {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 17px; font-weight: 500;
+      text-decoration: none; color: var(--accent);
+    }
+    .brand em { color: var(--ink); font-style: normal; }
+    .btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 7px 16px; border-radius: 10px;
+      font-size: 13px; font-weight: 600;
+      cursor: pointer; text-decoration: none; border: none;
+      font-family: inherit; transition: all 0.2s ease;
+    }
+    .btn-g {
+      background: rgba(56,189,248,0.08);
+      border: 1px solid rgba(56,189,248,0.22); color: var(--accent);
+    }
+    .btn-g:hover { background: rgba(56,189,248,0.16); }
+
+    /* Hero */
+    .proj-hero { padding: 64px 0 48px; position: relative; overflow: hidden; }
+    .proj-hero::before {
+      content: ''; position: absolute; inset: 0;
+      background-image: radial-gradient(rgba(56,189,248,0.1) 1px, transparent 1px);
+      background-size: 28px 28px;
+      mask-image: radial-gradient(ellipse 70% 80% at 50% 50%, black 30%, transparent 100%);
+      -webkit-mask-image: radial-gradient(ellipse 70% 80% at 50% 50%, black 30%, transparent 100%);
+      pointer-events: none;
+    }
+    .back-btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      color: var(--muted); text-decoration: none;
+      font-size: 13px; font-family: 'JetBrains Mono', monospace;
+      margin-bottom: 24px; transition: color 0.18s;
+    }
+    .back-btn:hover { color: var(--accent); }
+    .slabel {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px; letter-spacing: 2.5px;
+      text-transform: uppercase; color: var(--accent); margin-bottom: 10px;
+    }
+    .proj-title { font-size: clamp(30px, 5vw, 48px); letter-spacing: -1.5px; margin-bottom: 16px; }
+    .proj-meta { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 32px; }
+    .tag {
+      background: rgba(56,189,248,0.07); border: 1px solid rgba(56,189,248,0.2);
+      padding: 4px 12px; border-radius: 99px;
+      font-size: 12px; color: var(--accent); font-family: 'JetBrains Mono', monospace;
     }
 
-    .traffic-images img:hover {
-      transform: scale(1.05);
+    /* Content */
+    .proj-body { padding: 0 0 80px; }
+    .proj-body p { color: var(--muted); font-size: 16px; line-height: 1.82; margin-bottom: 20px; }
+    .proj-body strong { color: var(--ink); }
+
+    .section-h2 { font-size: clamp(20px,3vw,26px); letter-spacing: -0.5px; margin-bottom: 20px; margin-top: 40px; }
+
+    .photo-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+      margin: 28px 0;
+    }
+    @media (max-width: 600px) { .photo-grid { grid-template-columns: 1fr; } }
+
+    .img-card {
+      background: var(--card); border: 1px solid var(--cb);
+      border-radius: 14px; overflow: hidden;
+      transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+    }
+    .img-card:hover {
+      border-color: rgba(56,189,248,0.3);
+      box-shadow: 0 0 20px var(--glow);
+      transform: translateY(-2px);
+    }
+    .img-card img { width: 100%; display: block; }
+    .img-caption {
+      padding: 10px 14px; font-size: 12px; color: var(--muted);
+      font-family: 'JetBrains Mono', monospace; border-top: 1px solid var(--cb);
     }
 
-    .project-detail {
-      font-family: 'Inter', 'Roboto', sans-serif;
-      font-weight: 400;
-      color: #333;
-      padding: 60px 10%;
-      background-color: #f7f9fb;
+    .highlight-box {
+      background: var(--card); border: 1px solid var(--cb);
+      border-left: 3px solid var(--accent);
+      border-radius: 12px; padding: 18px 20px;
+      margin: 24px 0; color: var(--muted); font-size: 15px; line-height: 1.72;
     }
+    .highlight-box strong { color: var(--ink); }
 
-    .project-detail h1 {
-      font-family: 'Poppins', sans-serif;
-      font-size: 32px;
-      font-weight: 600;
-      text-align: center;
-      margin-bottom: 20px;
+    /* Footer */
+    .footer {
+      border-top: 1px solid rgba(56,189,248,0.08);
+      padding: 20px 0; text-align: center;
+      color: var(--muted); font-size: 13px;
+      font-family: 'JetBrains Mono', monospace;
     }
-
-    .project-detail p {
-      font-size: 17px;
-      line-height: 1.75;
-      margin: 0 auto 30px;
-      max-width: 800px;
-      text-align: justify;
-      color: #444;
-    }
-
-    .project-detail a {
-      display: inline-block;
-      margin-top: 20px;
-      color: #5a63d8;
-      text-decoration: none;
-      font-weight: 500;
-    }
-
-    .project-detail a:hover {
-      text-decoration: underline;
-    }
+    .footer a { color: var(--accent); text-decoration: none; }
   </style>
 </head>
 <body>
-  <section class="project-detail">
+  <header class="site-header">
+    <div class="container hdr">
+      <a href="index.html" class="brand">&lt;<em>KH</em>/&gt;</a>
+      <button id="themeToggle" class="btn btn-g" aria-label="Toggle theme">☀</button>
+    </div>
+  </header>
+
+  <section class="proj-hero">
     <div class="container">
-      <h1>Traffic Signal State Machine</h1>
-      <div class="traffic-images">
-        <img src="cicuit.jpeg" alt="Traffic signal photo 1" />
-        <img src="Traffic light.jpeg" alt="Traffic signal photo 2" />
+      <a href="index.html" class="back-btn">← Back to Projects</a>
+      <div class="slabel">// Verilog · TTL · Hardware</div>
+      <h1 class="proj-title">Traffic Signal <span class="gt">FSM</span></h1>
+      <div class="proj-meta">
+        <span class="tag">Verilog</span>
+        <span class="tag">TTL Logic</span>
+        <span class="tag">Hardware</span>
+        <span class="tag">Finite State Machine</span>
+        <span class="tag">PCB</span>
       </div>
-      <p>
-        This project showcases a custom-built traffic signal controller implemented using a TTL-based finite state machine. Designed on a physical PCB, the system uses combinational and sequential logic to simulate red, yellow, and green traffic light transitions. A clock pulse triggers state changes, mimicking real-world intersection behavior.
-      </p>
-      <p>
-        The project helped reinforce key concepts in digital electronics, such as timing diagrams, state design, and logic gate configuration. This hands-on experience deepened my understanding of hardware implementation and system-level control, bridging theory and practice.
-      </p>
-      <a href="index.html">← Back to Projects</a>
     </div>
   </section>
+
+  <div class="proj-body">
+    <div class="container">
+      <p>
+        This project is a custom-built <strong>traffic signal controller</strong> implemented using a
+        TTL-based finite state machine. Designed on a physical PCB, the system uses combinational and
+        sequential logic to simulate red, yellow, and green traffic light transitions. A clock pulse
+        triggers state changes, mimicking real-world intersection behavior.
+      </p>
+
+      <h2 class="section-h2">The <span class="gt">hardware</span></h2>
+
+      <div class="photo-grid">
+        <div class="img-card">
+          <img src="cicuit.jpeg" alt="PCB circuit board" />
+          <div class="img-caption">// PCB circuit layout</div>
+        </div>
+        <div class="img-card">
+          <img src="Traffic light.jpeg" alt="Traffic signal indicators" />
+          <div class="img-caption">// traffic light indicators</div>
+        </div>
+      </div>
+
+      <div class="highlight-box">
+        The FSM cycles through states — <strong>Red → Green → Yellow → Red</strong> — driven by a
+        custom clock circuit. Each state transition is encoded in TTL logic gates, with state registers
+        holding the current signal phase between clock edges.
+      </div>
+
+      <p>
+        The project reinforced key concepts in <strong>digital electronics</strong>: timing diagrams,
+        state encoding, logic gate configuration, and the challenge of translating a Verilog state
+        machine into a physical TTL circuit.
+      </p>
+      <p>
+        This hands-on build bridged the gap between simulation and real hardware, deepening my
+        understanding of system-level control and physical circuit constraints.
+      </p>
+      <p>
+        <strong>Technologies:</strong> Verilog HDL, TTL logic ICs, PCB design, finite state machine
+        theory, custom clock circuit.
+      </p>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="container">© <span id="year"></span> <a href="index.html">Kelvin Ha</a></div>
+  </footer>
+
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+    const tt = document.getElementById('themeToggle');
+    const saved = localStorage.getItem('kelvin_theme');
+    if (saved === 'light') { document.body.classList.add('light'); tt.textContent = '🌙'; }
+    else { tt.textContent = '☀'; }
+    tt.addEventListener('click', () => {
+      document.body.classList.toggle('light');
+      const isLight = document.body.classList.contains('light');
+      localStorage.setItem('kelvin_theme', isLight ? 'light' : 'dark');
+      tt.textContent = isLight ? '🌙' : '☀';
+    });
+  </script>
 </body>
 </html>

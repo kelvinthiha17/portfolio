@@ -2,71 +2,209 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Yearly Calendar Generator | Kelvin's Portfolio</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Yearly Calendar Generator — Kelvin Ha</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #030712; --bg2: #0d1117; --card: #0f1623;
+      --cb: rgba(56,189,248,0.12); --ink: #e2e8f0; --muted: #8892a4;
+      --accent: #38bdf8; --accent2: #a78bfa; --accent3: #34d399;
+      --glow: rgba(56,189,248,0.22);
+    }
+    body.light {
+      --bg: #f8fafc; --bg2: #f1f5f9; --card: #ffffff;
+      --cb: rgba(56,189,248,0.18); --ink: #0f172a; --muted: #64748b;
+      --glow: rgba(56,189,248,0.10);
+    }
+    html { scroll-behavior: smooth; }
     body {
-      font-size: 1.15rem;
-      line-height: 1.7;
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--bg); color: var(--ink);
+      line-height: 1.65; transition: background 0.3s, color 0.3s;
+    }
+    h1,h2,h3 { font-family: 'Space Grotesk', Inter, sans-serif; font-weight: 700; line-height: 1.2; }
+    .container { max-width: 820px; margin: 0 auto; padding: 0 24px; }
+    .gt {
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
     }
 
-    .project-detail .container {
-      max-width: 800px;
-      margin: auto;
-      padding: 40px 20px;
+    /* Header */
+    .site-header {
+      position: sticky; top: 0; z-index: 50;
+      border-bottom: 1px solid rgba(56,189,248,0.08);
+      background: rgba(3,7,18,0.85);
+      backdrop-filter: blur(18px) saturate(180%);
+    }
+    body.light .site-header { background: rgba(248,250,252,0.88); }
+    .hdr {
+      display: flex; align-items: center;
+      justify-content: space-between; gap: 16px; padding: 13px 0;
+    }
+    .brand {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 17px; font-weight: 500;
+      text-decoration: none; color: var(--accent);
+    }
+    .brand em { color: var(--ink); font-style: normal; }
+    .btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 7px 16px; border-radius: 10px;
+      font-size: 13px; font-weight: 600;
+      cursor: pointer; text-decoration: none; border: none;
+      font-family: inherit; transition: all 0.2s ease;
+    }
+    .btn-g {
+      background: rgba(56,189,248,0.08);
+      border: 1px solid rgba(56,189,248,0.22); color: var(--accent);
+    }
+    .btn-g:hover { background: rgba(56,189,248,0.16); }
+
+    /* Hero */
+    .proj-hero { padding: 64px 0 48px; position: relative; overflow: hidden; }
+    .proj-hero::before {
+      content: ''; position: absolute; inset: 0;
+      background-image: radial-gradient(rgba(56,189,248,0.1) 1px, transparent 1px);
+      background-size: 28px 28px;
+      mask-image: radial-gradient(ellipse 70% 80% at 50% 50%, black 30%, transparent 100%);
+      -webkit-mask-image: radial-gradient(ellipse 70% 80% at 50% 50%, black 30%, transparent 100%);
+      pointer-events: none;
+    }
+    .back-btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      color: var(--muted); text-decoration: none;
+      font-size: 13px; font-family: 'JetBrains Mono', monospace;
+      margin-bottom: 24px; transition: color 0.18s;
+    }
+    .back-btn:hover { color: var(--accent); }
+    .slabel {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px; letter-spacing: 2.5px;
+      text-transform: uppercase; color: var(--accent); margin-bottom: 10px;
+    }
+    .proj-title { font-size: clamp(30px, 5vw, 48px); letter-spacing: -1.5px; margin-bottom: 16px; }
+    .proj-meta { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 32px; }
+    .tag {
+      background: rgba(56,189,248,0.07); border: 1px solid rgba(56,189,248,0.2);
+      padding: 4px 12px; border-radius: 99px;
+      font-size: 12px; color: var(--accent); font-family: 'JetBrains Mono', monospace;
     }
 
-    .project-image {
-      max-width: 400px;
-      width: 90%;
-      height: auto;
-      border-radius: 10px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
-      margin-bottom: 8px;
+    /* Content */
+    .proj-body { padding: 0 0 80px; }
+    .proj-body p { color: var(--muted); font-size: 16px; line-height: 1.82; margin-bottom: 20px; }
+    .proj-body strong { color: var(--ink); }
+
+    .section-h2 { font-size: clamp(20px,3vw,26px); letter-spacing: -0.5px; margin-bottom: 20px; margin-top: 40px; }
+
+    .screenshot-pair {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+      margin: 28px 0;
+    }
+    @media (max-width: 600px) { .screenshot-pair { grid-template-columns: 1fr; } }
+
+    .img-card {
+      background: var(--card); border: 1px solid var(--cb);
+      border-radius: 14px; overflow: hidden;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .img-card:hover { border-color: rgba(56,189,248,0.3); box-shadow: 0 0 20px var(--glow); }
+    .img-card img { width: 100%; display: block; }
+    .img-caption {
+      padding: 10px 14px;
+      font-size: 12px; color: var(--muted);
+      font-family: 'JetBrains Mono', monospace;
+      border-top: 1px solid var(--cb);
     }
 
-    .image-caption {
-      font-style: italic;
-      font-size: 1.05rem;
-      margin-bottom: 32px;
-      color: #555;
+    /* Footer */
+    .footer {
+      border-top: 1px solid rgba(56,189,248,0.08);
+      padding: 20px 0; text-align: center;
+      color: var(--muted); font-size: 13px;
+      font-family: 'JetBrains Mono', monospace;
     }
-
-    h1 {
-      font-size: 2rem;
-      margin-bottom: 20px;
-    }
-
-    p {
-      margin-bottom: 20px;
-    }
+    .footer a { color: var(--accent); text-decoration: none; }
   </style>
 </head>
 <body>
+  <header class="site-header">
+    <div class="container hdr">
+      <a href="index.html" class="brand">&lt;<em>KH</em>/&gt;</a>
+      <button id="themeToggle" class="btn btn-g" aria-label="Toggle theme">☀</button>
+    </div>
+  </header>
 
-  <section class="project-detail">
+  <section class="proj-hero">
     <div class="container">
-      <h1>Yearly Calendar Generator (Java)</h1>
-
-      <p>This Java project generates a full calendar for any given year, including accurate leap year calculations and proper weekday alignment. The program dynamically builds each month and organizes days to reflect real-world layouts.</p>
-
-      <div style="text-align: center;">
-        <img src="calendarinput.png" alt="Calendar app input screen" class="project-image">
-        <div class="image-caption">User interface where the year is entered.</div>
+      <a href="index.html" class="back-btn">← Back to Projects</a>
+      <div class="slabel">// Java · Swing GUI</div>
+      <h1 class="proj-title">Yearly Calendar <span class="gt">Generator</span></h1>
+      <div class="proj-meta">
+        <span class="tag">Java</span>
+        <span class="tag">Swing GUI</span>
+        <span class="tag">CLI</span>
+        <span class="tag">Leap Year Logic</span>
       </div>
-
-      <p>Once the user enters a valid year and clicks "Generate Calendar", the app calculates the first day of each month and determines if the year is a leap year. It then displays each month in a structured and readable format.</p>
-
-      <div style="text-align: center;">
-        <img src="calendaroutput.png" alt="Generated yearly calendar" class="project-image">
-        <div class="image-caption">Generated calendar displaying correct monthly layouts.</div>
-      </div>
-
-      <p><strong>Technologies Used:</strong> Java, control structures, arrays, modular arithmetic, Swing GUI</p>
-
-      <a href="index.html">← Back to Home</a>
     </div>
   </section>
 
+  <div class="proj-body">
+    <div class="container">
+      <p>
+        This Java project generates a full calendar for any given year, including accurate
+        <strong>leap year calculations</strong> and proper weekday alignment. The program
+        dynamically builds each month and organizes days to reflect real-world calendar layouts.
+      </p>
+
+      <h2 class="section-h2">How it <span class="gt">works</span></h2>
+
+      <p>
+        Once the user enters a valid year and clicks "Generate Calendar", the app calculates the
+        <strong>first day of each month</strong> using modular arithmetic and determines if the year is
+        a leap year. It then displays all 12 months in a structured, readable format.
+      </p>
+
+      <div class="screenshot-pair">
+        <div class="img-card">
+          <img src="calendarinput.png" alt="Calendar input screen" />
+          <div class="img-caption">// user inputs the year</div>
+        </div>
+        <div class="img-card">
+          <img src="calendaroutput.png" alt="Generated yearly calendar" />
+          <div class="img-caption">// generated calendar output</div>
+        </div>
+      </div>
+
+      <p>
+        The calendar correctly handles edge cases like <strong>February in leap years</strong>,
+        month offsets, and the starting weekday for any arbitrary year — all computed without any
+        external date libraries.
+      </p>
+      <p>
+        <strong>Technologies:</strong> Java, control structures, arrays, modular arithmetic, Swing GUI.
+      </p>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="container">© <span id="year"></span> <a href="index.html">Kelvin Ha</a></div>
+  </footer>
+
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+    const tt = document.getElementById('themeToggle');
+    const saved = localStorage.getItem('kelvin_theme');
+    if (saved === 'light') { document.body.classList.add('light'); tt.textContent = '🌙'; }
+    else { tt.textContent = '☀'; }
+    tt.addEventListener('click', () => {
+      document.body.classList.toggle('light');
+      const isLight = document.body.classList.contains('light');
+      localStorage.setItem('kelvin_theme', isLight ? 'light' : 'dark');
+      tt.textContent = isLight ? '🌙' : '☀';
+    });
+  </script>
 </body>
 </html>

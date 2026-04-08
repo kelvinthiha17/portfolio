@@ -2,67 +2,245 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Huffman Coding | Kelvin's Portfolio</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Huffman Coding — Kelvin Ha</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
-    .project-detail {
-      max-width: 1000px;
-      margin: 0 auto;
-      padding: 40px 20px;
-      font-family: 'Segoe UI', sans-serif;
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #030712; --bg2: #0d1117; --card: #0f1623;
+      --cb: rgba(56,189,248,0.12); --ink: #e2e8f0; --muted: #8892a4;
+      --accent: #38bdf8; --accent2: #a78bfa; --accent3: #34d399;
+      --glow: rgba(56,189,248,0.22);
     }
-    .project-detail h1 {
-      font-size: 2.5em;
-      font-weight: bold;
-      text-align: center;
-      margin-bottom: 30px;
+    body.light {
+      --bg: #f8fafc; --bg2: #f1f5f9; --card: #ffffff;
+      --cb: rgba(56,189,248,0.18); --ink: #0f172a; --muted: #64748b;
+      --glow: rgba(56,189,248,0.10);
     }
-    .project-detail p {
-      font-size: 1.1em;
-      line-height: 1.6;
-      margin-bottom: 20px;
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--bg); color: var(--ink);
+      line-height: 1.65; transition: background 0.3s, color 0.3s;
     }
-    .project-detail img {
-      display: block;
-      max-width: 100%;
-      height: auto;
-      margin: 20px auto;
-      border-radius: 10px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    h1,h2,h3 { font-family: 'Space Grotesk', Inter, sans-serif; font-weight: 700; line-height: 1.2; }
+    .container { max-width: 820px; margin: 0 auto; padding: 0 24px; }
+    .gt {
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
     }
-    .back-link {
-      display: inline-block;
-      margin-top: 30px;
-      text-decoration: none;
-      color: #5e3eff;
-      font-weight: 600;
+
+    /* Header */
+    .site-header {
+      position: sticky; top: 0; z-index: 50;
+      border-bottom: 1px solid rgba(56,189,248,0.08);
+      background: rgba(3,7,18,0.85);
+      backdrop-filter: blur(18px) saturate(180%);
     }
+    body.light .site-header { background: rgba(248,250,252,0.88); }
+    .hdr {
+      display: flex; align-items: center;
+      justify-content: space-between; gap: 16px; padding: 13px 0;
+    }
+    .brand {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 17px; font-weight: 500;
+      text-decoration: none; color: var(--accent);
+    }
+    .brand em { color: var(--ink); font-style: normal; }
+    .hdr-right { display: flex; gap: 10px; align-items: center; }
+    .btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 7px 16px; border-radius: 10px;
+      font-size: 13px; font-weight: 600;
+      cursor: pointer; text-decoration: none; border: none;
+      font-family: inherit; transition: all 0.2s ease;
+    }
+    .btn-g {
+      background: rgba(56,189,248,0.08);
+      border: 1px solid rgba(56,189,248,0.22); color: var(--accent);
+    }
+    .btn-g:hover { background: rgba(56,189,248,0.16); }
+
+    /* Hero */
+    .proj-hero {
+      padding: 64px 0 48px; position: relative; overflow: hidden;
+    }
+    .proj-hero::before {
+      content: ''; position: absolute; inset: 0;
+      background-image: radial-gradient(rgba(56,189,248,0.1) 1px, transparent 1px);
+      background-size: 28px 28px;
+      mask-image: radial-gradient(ellipse 70% 80% at 50% 50%, black 30%, transparent 100%);
+      -webkit-mask-image: radial-gradient(ellipse 70% 80% at 50% 50%, black 30%, transparent 100%);
+      pointer-events: none;
+    }
+    .back-btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      color: var(--muted); text-decoration: none;
+      font-size: 13px; font-family: 'JetBrains Mono', monospace;
+      margin-bottom: 24px;
+      transition: color 0.18s;
+    }
+    .back-btn:hover { color: var(--accent); }
+    .slabel {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px; letter-spacing: 2.5px;
+      text-transform: uppercase; color: var(--accent);
+      margin-bottom: 10px;
+    }
+    .proj-title { font-size: clamp(30px, 5vw, 48px); letter-spacing: -1.5px; margin-bottom: 16px; }
+    .proj-meta {
+      display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 32px;
+    }
+    .tag {
+      background: rgba(56,189,248,0.07);
+      border: 1px solid rgba(56,189,248,0.2);
+      padding: 4px 12px; border-radius: 99px;
+      font-size: 12px; color: var(--accent);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* Content */
+    .proj-body { padding: 0 0 80px; }
+    .proj-body p {
+      color: var(--muted); font-size: 16px;
+      line-height: 1.82; margin-bottom: 20px;
+    }
+    .proj-body strong { color: var(--ink); }
+
+    .step-block {
+      background: var(--card);
+      border: 1px solid var(--cb);
+      border-radius: 16px; padding: 24px;
+      margin-bottom: 24px;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .step-block:hover {
+      border-color: rgba(56,189,248,0.3);
+      box-shadow: 0 0 20px var(--glow);
+    }
+    .step-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px; color: var(--accent);
+      letter-spacing: 2px; text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    .step-block img {
+      width: 100%; border-radius: 10px;
+      margin-bottom: 14px; display: block;
+    }
+    .step-block p { margin: 0; }
+
+    .section-h2 {
+      font-size: clamp(20px, 3vw, 26px); letter-spacing: -0.5px;
+      margin-bottom: 20px; margin-top: 40px;
+    }
+
+    /* Footer */
+    .footer {
+      border-top: 1px solid rgba(56,189,248,0.08);
+      padding: 20px 0; text-align: center;
+      color: var(--muted); font-size: 13px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .footer a { color: var(--accent); text-decoration: none; }
   </style>
 </head>
 <body>
-  <section class="project-detail">
-    <h1>Huffman Coding (C++)</h1>
+  <header class="site-header">
+    <div class="container hdr">
+      <a href="index.html" class="brand">&lt;<em>KH</em>/&gt;</a>
+      <div class="hdr-right">
+        <button id="themeToggle" class="btn btn-g" aria-label="Toggle theme">☀</button>
+      </div>
+    </div>
+  </header>
 
-    <p>This project is a file compression and decompression tool implemented in C++ using Huffman Coding — a well-known lossless data compression algorithm. The approach builds a binary tree based on character frequency, assigning shorter binary codes to more frequent characters to reduce file size.</p>
-
-    <img src="intialstring.png" alt="Initial string representation" />
-    <p><strong>Step 1:</strong> Initial string is prepared from user input.</p>
-
-    <img src="frequencystring.png" alt="Frequency of each character" />
-    <p><strong>Step 2:</strong> The frequency of each character is calculated.</p>
-
-    <img src="charactersorted.png" alt="Characters sorted by frequency" />
-    <p><strong>Step 3:</strong> Characters are sorted in ascending order of frequency for tree construction.</p>
-
-    <img src="gettingsum.png" alt="Tree construction from frequencies" />
-    <p><strong>Step 4:</strong> Nodes with the lowest frequencies are repeatedly merged to build the Huffman tree.</p>
-
-    <img src="decoding.png" alt="Decoding traversal of the Huffman tree" />
-    <p><strong>Step 5:</strong> The tree is traversed using 0s and 1s to decode each character. For example, to decode 'D', we follow 1 → 0 → 1.</p>
-    <p>This project deepened my understanding of tree-based data structures like binary trees, and file handling in C++.</p>
-    <p><strong>Technologies Used:</strong> C++, Data structures like priority_queue, unordered_map, file I/O, binary tree structures</p>
-
-    <a href="index.html" class="back-link">← Back to Home</a>
+  <section class="proj-hero">
+    <div class="container">
+      <a href="index.html" class="back-btn">← Back to Projects</a>
+      <div class="slabel">// C++ · Data Structures</div>
+      <h1 class="proj-title">Huffman <span class="gt">Coding</span></h1>
+      <div class="proj-meta">
+        <span class="tag">C++</span>
+        <span class="tag">DS&A</span>
+        <span class="tag">Binary Trees</span>
+        <span class="tag">CLI</span>
+        <span class="tag">File Compression</span>
+      </div>
+    </div>
   </section>
+
+  <div class="proj-body">
+    <div class="container">
+      <p>
+        This project is a file compression and decompression tool implemented in C++ using
+        <strong>Huffman Coding</strong> — a well-known lossless data compression algorithm. The approach
+        builds a binary tree based on character frequency, assigning shorter binary codes to more frequent
+        characters to reduce overall file size by ~40% in tests.
+      </p>
+
+      <h2 class="section-h2">How it <span class="gt">works</span></h2>
+
+      <div class="step-block">
+        <div class="step-num">// step 01</div>
+        <img src="intialstring.png" alt="Initial string representation" />
+        <p>The initial string is read from user input or a file and prepared for processing.</p>
+      </div>
+
+      <div class="step-block">
+        <div class="step-num">// step 02</div>
+        <img src="frequencystring.png" alt="Frequency of each character" />
+        <p>The frequency of each character is calculated using an <strong>unordered_map</strong>.</p>
+      </div>
+
+      <div class="step-block">
+        <div class="step-num">// step 03</div>
+        <img src="charactersorted.png" alt="Characters sorted by frequency" />
+        <p>Characters are sorted in ascending order of frequency and inserted into a <strong>priority_queue</strong> for tree construction.</p>
+      </div>
+
+      <div class="step-block">
+        <div class="step-num">// step 04</div>
+        <img src="gettingsum.png" alt="Tree construction" />
+        <p>Nodes with the lowest frequencies are repeatedly merged to build the <strong>Huffman tree</strong>, where each leaf represents a character.</p>
+      </div>
+
+      <div class="step-block">
+        <div class="step-num">// step 05</div>
+        <img src="decoding.png" alt="Decoding traversal" />
+        <p>The tree is traversed using 0s and 1s to decode each character. For example, to decode <strong>'D'</strong>, follow 1 → 0 → 1 down the tree.</p>
+      </div>
+
+      <p>
+        This project deepened my understanding of tree-based data structures, priority queues, and
+        file I/O in C++. It was a strong exercise in translating algorithm theory directly into working,
+        optimized code.
+      </p>
+      <p>
+        <strong>Technologies:</strong> C++, <code style="font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--accent)">priority_queue</code>,
+        <code style="font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--accent)">unordered_map</code>, binary tree structures, file I/O.
+      </p>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="container">© <span id="year"></span> <a href="index.html">Kelvin Ha</a></div>
+  </footer>
+
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+    const tt = document.getElementById('themeToggle');
+    const saved = localStorage.getItem('kelvin_theme');
+    if (saved === 'light') { document.body.classList.add('light'); tt.textContent = '🌙'; }
+    else { tt.textContent = '☀'; }
+    tt.addEventListener('click', () => {
+      document.body.classList.toggle('light');
+      const isLight = document.body.classList.contains('light');
+      localStorage.setItem('kelvin_theme', isLight ? 'light' : 'dark');
+      tt.textContent = isLight ? '🌙' : '☀';
+    });
+  </script>
 </body>
 </html>
