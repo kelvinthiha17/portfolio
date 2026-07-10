@@ -15,24 +15,24 @@
       --bg:       #030712;
       --bg2:      #0d1117;
       --card:     #0f1623;
-      --cb:       rgba(56, 189, 248, 0.12);
+      --cb:       rgba(57,255,143, 0.12);
       --ink:      #e2e8f0;
       --muted:    #8892a4;
-      --accent:   #38bdf8;
-      --accent2:  #a78bfa;
-      --accent3:  #34d399;
-      --glow:     rgba(56, 189, 248, 0.28);
-      --glow2:    rgba(167, 139, 250, 0.18);
+      --accent:   #39ff8f;
+      --accent2:  #ffb020;
+      --accent3:  #38bdf8;
+      --glow:     rgba(57,255,143, 0.28);
+      --glow2:    rgba(255,176,32, 0.18);
     }
     body.light {
       --bg:    #f8fafc;
       --bg2:   #f1f5f9;
       --card:  #ffffff;
-      --cb:    rgba(56, 189, 248, 0.18);
+      --cb:    rgba(57,255,143, 0.18);
       --ink:   #0f172a;
       --muted: #64748b;
-      --glow:  rgba(56, 189, 248, 0.12);
-      --glow2: rgba(167, 139, 250, 0.10);
+      --glow:  rgba(57,255,143, 0.12);
+      --glow2: rgba(255,176,32, 0.10);
     }
 
     /* ===== BASE ===== */
@@ -74,13 +74,13 @@
     /* ===== HEADER ===== */
     .site-header {
       position: sticky; top: 0; z-index: 50;
-      border-bottom: 1px solid rgba(56,189,248,0.08);
+      border-bottom: 1px solid rgba(57,255,143,0.08);
       background: rgba(3,7,18,0.80);
       backdrop-filter: blur(18px) saturate(180%);
     }
     body.light .site-header {
       background: rgba(248,250,252,0.82);
-      border-bottom-color: rgba(56,189,248,0.14);
+      border-bottom-color: rgba(57,255,143,0.14);
     }
     .hdr {
       display: flex; align-items: center;
@@ -104,7 +104,7 @@
     }
     .nav a:hover, .nav a.active {
       color: var(--ink);
-      background: rgba(56,189,248,0.09);
+      background: rgba(57,255,143,0.09);
     }
 
     /* Buttons */
@@ -117,11 +117,11 @@
       transition: all 0.2s ease;
     }
     .btn-g {
-      background: rgba(56,189,248,0.09);
-      border: 1px solid rgba(56,189,248,0.22);
+      background: rgba(57,255,143,0.09);
+      border: 1px solid rgba(57,255,143,0.22);
       color: var(--accent);
     }
-    .btn-g:hover { background: rgba(56,189,248,0.16); }
+    .btn-g:hover { background: rgba(57,255,143,0.16); }
     .btn-p {
       background: linear-gradient(135deg, var(--accent), var(--accent2));
       color: #030712;
@@ -130,14 +130,14 @@
     .btn-p:hover { transform: translateY(-2px); box-shadow: 0 0 34px var(--glow); }
     .btn-o {
       background: transparent; color: var(--ink);
-      border: 1px solid rgba(56,189,248,0.28);
+      border: 1px solid rgba(57,255,143,0.28);
     }
-    .btn-o:hover { border-color: var(--accent); color: var(--accent); background: rgba(56,189,248,0.05); }
+    .btn-o:hover { border-color: var(--accent); color: var(--accent); background: rgba(57,255,143,0.05); }
 
     .menu-btn {
       display: none;
-      background: rgba(56,189,248,0.08);
-      border: 1px solid rgba(56,189,248,0.2);
+      background: rgba(57,255,143,0.08);
+      border: 1px solid rgba(57,255,143,0.2);
       border-radius: 10px; padding: 8px 12px;
       cursor: pointer; color: var(--accent); font-size: 18px;
     }
@@ -145,7 +145,7 @@
     .mobile-nav {
       display: flex; flex-direction: column; gap: 2px;
       padding: 8px 24px 14px;
-      border-bottom: 1px solid rgba(56,189,248,0.08);
+      border-bottom: 1px solid rgba(57,255,143,0.08);
       background: rgba(3,7,18,0.96);
     }
     body.light .mobile-nav { background: rgba(248,250,252,0.98); }
@@ -154,7 +154,7 @@
       padding: 10px 12px; border-radius: 8px;
       font-weight: 500; transition: color 0.2s, background 0.2s;
     }
-    .mobile-nav a:hover { color: var(--ink); background: rgba(56,189,248,0.08); }
+    .mobile-nav a:hover { color: var(--ink); background: rgba(57,255,143,0.08); }
     .hidden { display: none !important; }
 
     /* ===== HERO ===== */
@@ -165,35 +165,47 @@
       display: flex; align-items: center;
     }
 
-    /* Animated orbs */
-    .orb {
-      position: absolute; border-radius: 50%;
-      filter: blur(80px); pointer-events: none;
-      animation: orb-drift 10s ease-in-out infinite;
+    /* Signal traces — scrolling digital waveforms, standing in for a logic analyzer capture */
+    .signal-trace {
+      position: absolute; left: -10%; width: 120%; height: 3px;
+      pointer-events: none;
+      mask-image: linear-gradient(90deg, transparent, black 12%, black 88%, transparent);
+      -webkit-mask-image: linear-gradient(90deg, transparent, black 12%, black 88%, transparent);
+      animation: signal-scroll linear infinite;
     }
-    .orb-1 { width: 520px; height: 520px; background: var(--accent);    opacity: .10; top: -120px; right: -80px; animation-delay: 0s; }
-    .orb-2 { width: 420px; height: 420px; background: var(--accent2);   opacity: .10; bottom: -100px; left: -80px; animation-delay: -4s; }
-    .orb-3 { width: 280px; height: 280px; background: var(--accent3);   opacity: .08; top: 40%; left: 35%; animation-delay: -7s; }
-    body.light .orb { opacity: .05; }
+    .signal-trace.ch1 {
+      top: 22%; opacity: .5;
+      background-image: repeating-linear-gradient(90deg,
+        var(--accent) 0 3px, transparent 3px 58px,
+        var(--accent) 58px 61px, transparent 61px 96px);
+      animation-duration: 9s;
+    }
+    .signal-trace.ch2 {
+      top: 68%; opacity: .34;
+      background-image: repeating-linear-gradient(90deg,
+        var(--accent2) 0 3px, transparent 3px 40px,
+        var(--accent2) 40px 66px, transparent 66px 130px);
+      animation-duration: 13s; animation-direction: reverse;
+    }
+    body.light .signal-trace { opacity: .28; }
 
-    @keyframes orb-drift {
-      0%,100% { transform: translate(0,0) scale(1); }
-      40%      { transform: translate(28px,-18px) scale(1.06); }
-      70%      { transform: translate(-16px,12px) scale(0.94); }
+    @keyframes signal-scroll {
+      from { transform: translateX(0); }
+      to   { transform: translateX(96px); }
     }
 
     /* Dot grid mask */
     .hero::before {
       content: '';
       position: absolute; inset: 0;
-      background-image: radial-gradient(rgba(56,189,248,0.14) 1px, transparent 1px);
+      background-image: radial-gradient(rgba(57,255,143,0.14) 1px, transparent 1px);
       background-size: 30px 30px;
       pointer-events: none;
       mask-image: radial-gradient(ellipse 75% 80% at 50% 50%, black 30%, transparent 100%);
       -webkit-mask-image: radial-gradient(ellipse 75% 80% at 50% 50%, black 30%, transparent 100%);
     }
     body.light .hero::before {
-      background-image: radial-gradient(rgba(56,189,248,0.2) 1px, transparent 1px);
+      background-image: radial-gradient(rgba(57,255,143,0.2) 1px, transparent 1px);
     }
 
     .grid-hero {
@@ -205,8 +217,8 @@
     /* Status pill */
     .status-pill {
       display: inline-flex; align-items: center; gap: 8px;
-      background: rgba(52,211,153,0.08);
-      border: 1px solid rgba(52,211,153,0.22);
+      background: rgba(56,189,248,0.08);
+      border: 1px solid rgba(56,189,248,0.22);
       border-radius: 99px; padding: 5px 14px;
       font-size: 12px; color: var(--accent3);
       font-family: 'JetBrains Mono', monospace;
@@ -301,7 +313,7 @@
       cursor: default;
     }
     .stat-card:hover {
-      border-color: rgba(56,189,248,0.4);
+      border-color: rgba(57,255,143,0.4);
       box-shadow: 0 0 22px var(--glow);
       transform: translateY(-2px);
     }
@@ -318,7 +330,7 @@
       transition: all 0.2s ease;
     }
     .skill-card:hover {
-      border-color: rgba(56,189,248,0.38);
+      border-color: rgba(57,255,143,0.38);
       box-shadow: 0 0 20px var(--glow);
       transform: translateY(-2px);
     }
@@ -342,7 +354,7 @@
       will-change: transform;
     }
     .card:hover {
-      border-color: rgba(56,189,248,0.4);
+      border-color: rgba(57,255,143,0.4);
       box-shadow: 0 0 28px var(--glow), 0 24px 44px rgba(0,0,0,0.35);
     }
 
@@ -366,8 +378,8 @@
 
     .tagz { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 14px; }
     .tagz span {
-      background: rgba(56,189,248,0.07);
-      border: 1px solid rgba(56,189,248,0.2);
+      background: rgba(57,255,143,0.07);
+      border: 1px solid rgba(57,255,143,0.2);
       padding: 3px 10px; border-radius: 99px;
       font-size: 11px; color: var(--accent);
       font-family: 'JetBrains Mono', monospace; font-weight: 500;
@@ -408,7 +420,7 @@
     .c-item {
       display: flex; align-items: center; gap: 12px;
       padding: 12px 0; font-size: 14px;
-      border-bottom: 1px solid rgba(56,189,248,0.07);
+      border-bottom: 1px solid rgba(57,255,143,0.07);
     }
     .c-item:last-child { border-bottom: none; }
     .c-item a { color: var(--muted); text-decoration: none; transition: color 0.18s; }
@@ -427,22 +439,22 @@
     .f-label span { color: var(--ink); }
     .f-input {
       padding: 11px 14px; border-radius: 10px;
-      border: 1px solid rgba(56,189,248,0.14);
-      background: rgba(56,189,248,0.04);
+      border: 1px solid rgba(57,255,143,0.14);
+      background: rgba(57,255,143,0.04);
       color: var(--ink); font-family: inherit; font-size: 14px;
       outline: none;
       transition: border-color 0.18s, box-shadow 0.18s;
     }
     .f-input:focus {
       border-color: var(--accent);
-      box-shadow: 0 0 0 3px rgba(56,189,248,0.1);
+      box-shadow: 0 0 0 3px rgba(57,255,143,0.1);
     }
     .f-input::placeholder { color: var(--muted); }
     textarea.f-input { resize: vertical; }
 
     /* ===== FOOTER ===== */
     .footer {
-      border-top: 1px solid rgba(56,189,248,0.08);
+      border-top: 1px solid rgba(57,255,143,0.08);
       padding: 24px 0; text-align: center;
       color: var(--muted); font-size: 13px;
       font-family: 'JetBrains Mono', monospace;
@@ -461,18 +473,18 @@
     .lightbox img {
       max-width: 90vw; max-height: 86vh;
       border-radius: 12px;
-      box-shadow: 0 0 60px rgba(56,189,248,0.18);
+      box-shadow: 0 0 60px rgba(57,255,143,0.18);
     }
     .lb-close {
       position: absolute; top: 20px; right: 20px;
-      background: rgba(56,189,248,0.1);
-      border: 1px solid rgba(56,189,248,0.22);
+      background: rgba(57,255,143,0.1);
+      border: 1px solid rgba(57,255,143,0.22);
       border-radius: 10px; padding: 8px 14px;
       cursor: pointer; color: var(--ink);
       font-family: 'JetBrains Mono', monospace; font-size: 13px;
       transition: background 0.18s;
     }
-    .lb-close:hover { background: rgba(56,189,248,0.2); }
+    .lb-close:hover { background: rgba(57,255,143,0.2); }
 
     /* ===== RESPONSIVE ===== */
     @media (max-width: 900px) {
@@ -517,15 +529,14 @@
 
   <!-- Hero -->
   <section id="top" class="hero">
-    <div class="orb orb-1" aria-hidden="true"></div>
-    <div class="orb orb-2" aria-hidden="true"></div>
-    <div class="orb orb-3" aria-hidden="true"></div>
+    <div class="signal-trace ch1" aria-hidden="true"></div>
+    <div class="signal-trace ch2" aria-hidden="true"></div>
 
     <div class="container grid-hero">
       <div class="hero-copy" data-aos="fade-up">
         <div class="status-pill">
           <span class="status-dot"></span>
-          Seeking Summer 2026 Internships · Embedded / HW / EE
+          Open to Full-Time 2027 · Embedded Systems / FPGA / HW
         </div>
         <h1>Hi, I'm <span class="gt" id="tw"></span></h1>
         <p class="hero-subtitle">
@@ -562,29 +573,30 @@
           <div class="slabel">// about me</div>
           <h2 class="stitle">Hardware + software, <span class="gt">both sides</span></h2>
           <p class="about-body">
-            I designed a <strong>16-bit RISC processor</strong> from scratch in Verilog — full instruction set,
-            datapath, and control logic. I also built a <strong>TTL-based traffic signal state machine</strong>
-            on a custom PCB, from schematic to soldered board. On the software side, I write in C++, Java,
-            and Python, and I've built a compiler front-end including a
-            <strong>recursive-descent LL(1) parser</strong> with RISC code generation.
+            I designed a <strong>16-bit RISC processor</strong> from scratch in Verilog — custom ISA, full
+            single-cycle datapath, and control logic. I also built a <strong>TTL-based traffic signal state
+            machine</strong> on a breadboard, wiring discrete logic gates and a custom clock circuit to drive
+            real LEDs, verified against an actual traffic light's timing. On the embedded side, I write in
+            Embedded C on STM32 (Cortex-M0+), building FreeRTOS-based multitasking firmware with PWM
+            generation, interrupt-driven timer capture, and real-time UART telemetry.
           </p>
           <p class="about-body">
-            My background spans <strong>digital logic design</strong>, circuit analysis,
-            FPGA development, and embedded C/C++. I work at the intersection of hardware
+            My background spans <strong>digital logic design</strong>, RTL verification,
+            FPGA development in Vivado, and embedded firmware. I work at the intersection of hardware
             and software because that's where the hard problems actually live.
           </p>
           <p class="about-body">
-            Open to <strong>F-1/CPT-authorized roles</strong>.
+            Open to <strong>F-1/OPT-authorized roles</strong>.
           </p>
         </div>
         <div data-aos="fade-up" data-aos-delay="120">
           <div class="stat-grid">
             <div class="stat-card">
-              <div class="stat-num">3+</div>
+              <div class="stat-num">5+</div>
               <div class="stat-lbl">projects shipped</div>
             </div>
             <div class="stat-card">
-              <div class="stat-num">5+</div>
+              <div class="stat-num">6+</div>
               <div class="stat-lbl">languages used</div>
             </div>
             <div class="stat-card">
@@ -607,14 +619,14 @@
       <div class="slabel" data-aos="fade-up">// technical skills</div>
       <h2 class="stitle" data-aos="fade-up" data-aos-delay="50">What I work <span class="gt">with</span></h2>
       <div class="skill-grid">
-        <div class="skill-card" data-aos="fade-up" data-aos-delay="0">  <div class="sk-icon">⚡</div><div><div class="sk-name">C++</div>          <div class="sk-type">systems</div></div></div>
-        <div class="skill-card" data-aos="fade-up" data-aos-delay="40"> <div class="sk-icon">☕</div><div><div class="sk-name">Java</div>         <div class="sk-type">backend</div></div></div>
-        <div class="skill-card" data-aos="fade-up" data-aos-delay="80"> <div class="sk-icon">🐍</div><div><div class="sk-name">Python</div>       <div class="sk-type">scripting</div></div></div>
-        <div class="skill-card" data-aos="fade-up" data-aos-delay="120"><div class="sk-icon">🌐</div><div><div class="sk-name">HTML · CSS · JS</div><div class="sk-type">web</div></div></div>
-        <div class="skill-card" data-aos="fade-up" data-aos-delay="160"><div class="sk-icon">🔌</div><div><div class="sk-name">Verilog · TTL</div><div class="sk-type">hardware</div></div></div>
-        <div class="skill-card" data-aos="fade-up" data-aos-delay="200"><div class="sk-icon">📐</div><div><div class="sk-name">MATLAB · LTSpice</div><div class="sk-type">simulation</div></div></div>
-        <div class="skill-card" data-aos="fade-up" data-aos-delay="240"><div class="sk-icon">🌲</div><div><div class="sk-name">Data Structures</div><div class="sk-type">algorithms</div></div></div>
-        <div class="skill-card" data-aos="fade-up" data-aos-delay="280"><div class="sk-icon">🔢</div><div><div class="sk-name">Digital Systems</div><div class="sk-type">hardware</div></div></div>
+        <div class="skill-card" data-aos="fade-up" data-aos-delay="0">  <div class="sk-icon">🔲</div><div><div class="sk-name">Verilog · SystemVerilog</div><div class="sk-type">RTL / hardware</div></div></div>
+        <div class="skill-card" data-aos="fade-up" data-aos-delay="40"> <div class="sk-icon">🧩</div><div><div class="sk-name">FPGA · Vivado</div><div class="sk-type">digital design</div></div></div>
+        <div class="skill-card" data-aos="fade-up" data-aos-delay="80"> <div class="sk-icon">🛠️</div><div><div class="sk-name">STM32 · Embedded C</div><div class="sk-type">firmware</div></div></div>
+        <div class="skill-card" data-aos="fade-up" data-aos-delay="120"><div class="sk-icon">⏱️</div><div><div class="sk-name">FreeRTOS</div><div class="sk-type">RTOS</div></div></div>
+        <div class="skill-card" data-aos="fade-up" data-aos-delay="160"><div class="sk-icon">📡</div><div><div class="sk-name">PWM · UART · I2C</div><div class="sk-type">peripherals</div></div></div>
+        <div class="skill-card" data-aos="fade-up" data-aos-delay="200"><div class="sk-icon">⚡</div><div><div class="sk-name">C++ · Python</div>          <div class="sk-type">systems</div></div></div>
+        <div class="skill-card" data-aos="fade-up" data-aos-delay="240"><div class="sk-icon">📐</div><div><div class="sk-name">LTSpice · Oscilloscopes</div><div class="sk-type">bench / simulation</div></div></div>
+        <div class="skill-card" data-aos="fade-up" data-aos-delay="280"><div class="sk-icon">🔢</div><div><div class="sk-name">Digital Logic · Microarch</div><div class="sk-type">core knowledge</div></div></div>
         <div class="skill-card" data-aos="fade-up" data-aos-delay="320"><div class="sk-icon">🐙</div><div><div class="sk-name">Git / GitHub</div>  <div class="sk-type">vcs</div></div></div>
       </div>
     </div>
@@ -647,6 +659,27 @@
             <h3>MiniRISC16 Processor</h3>
             <p>16-bit RISC CPU in Verilog — ALU, register file, instruction decoder, PC, and instruction memory. Verified with Icarus Verilog + GTKWave.</p>
             <div class="tagz"><span>Verilog</span><span>CPU Design</span><span>RTL</span><span>Icarus Verilog</span></div>
+            <div style="margin-top:14px;font-size:12px;color:var(--accent);font-family:'JetBrains Mono',monospace">View project →</div>
+          </div>
+        </a>
+
+        <a class="card" href="project-stm32.html" data-aos="fade-up" data-aos-delay="40">
+          <div class="card-img-wrap">
+            <div class="card-code-preview" aria-hidden="true">
+              <span class="cc-line"><span class="cc-kw">void</span> <span class="cc-fn">osTask_Blink</span>(<span class="cc-kw">void</span> *argument) {</span>
+              <span class="cc-line">  <span class="cc-kw">for</span> (;;) {</span>
+              <span class="cc-line">    HAL_GPIO_TogglePin(LED1_GPIO_Port, LED1_Pin);</span>
+              <span class="cc-line">    osDelay(<span class="cc-num">500</span>); <span class="cc-cm">// non-blocking</span></span>
+              <span class="cc-line">  }</span>
+              <span class="cc-line">}</span>
+              <span class="cc-line"><span class="cc-cm">// PWM servo sweep, 0°–180°, TIM3</span></span>
+              <span class="cc-line"><span class="cc-fn">__HAL_TIM_SET_COMPARE</span>(&htim3, TIM_CHANNEL_1, pulse);</span>
+            </div>
+          </div>
+          <div class="card-body">
+            <h3>STM32 Embedded Sensor & Control System</h3>
+            <p>Multi-peripheral firmware on an STM32 (Cortex-M0+) — PWM servo control, interrupt-driven timer capture, and a FreeRTOS multitasking architecture with real-time UART telemetry.</p>
+            <div class="tagz"><span>Embedded C</span><span>STM32</span><span>FreeRTOS</span><span>PWM</span></div>
             <div style="margin-top:14px;font-size:12px;color:var(--accent);font-family:'JetBrains Mono',monospace">View project →</div>
           </div>
         </a>
