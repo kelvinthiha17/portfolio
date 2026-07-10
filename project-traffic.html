@@ -172,6 +172,17 @@
         transitions. A clock pulse triggers state changes, mimicking real-world intersection behavior.
       </p>
 
+      <h2 class="section-h2">The <span class="gt">schematic</span></h2>
+      <p>
+        The full logic diagram: a 555 timer generates the clock, five 74LS74 D flip-flops act as the
+        state register, and a layer of AND-gate decode logic maps state combinations to the correct
+        red/yellow/green outputs on each of the two signal heads.
+      </p>
+      <div class="img-card" style="margin: 24px 0;">
+        <img src="traffic-schematic.png" alt="Full TTL schematic: 555 timer clock, 74LS74 flip-flop state register, AND-gate decode logic" />
+        <div class="img-caption">// full schematic — 555 timer + 74LS74 state register + decode logic</div>
+      </div>
+
       <h2 class="section-h2">The <span class="gt">hardware</span></h2>
 
       <div class="photo-grid">
@@ -201,8 +212,8 @@
         understanding of system-level control and physical circuit constraints.
       </p>
       <p>
-        <strong>Technologies:</strong> Verilog HDL, TTL logic ICs, breadboard prototyping, LTSpice,
-        Tinkercad, finite state machine theory, custom clock circuit.
+        <strong>Technologies:</strong> Verilog HDL, 555 timer, 74LS74 D flip-flops, TTL logic gates,
+        breadboard prototyping, LTSpice, Tinkercad, finite state machine theory.
       </p>
     </div>
   </div>
