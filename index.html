@@ -574,11 +574,11 @@
           <h2 class="stitle">Hardware + software, <span class="gt">both sides</span></h2>
           <p class="about-body">
             I designed a <strong>16-bit RISC processor</strong> from scratch in Verilog — custom ISA, full
-            single-cycle datapath, and control logic. I also built a <strong>TTL-based traffic signal state
-            machine</strong> on a breadboard, wiring discrete logic gates and a custom clock circuit to drive
-            real LEDs, verified against an actual traffic light's timing. On the embedded side, I write in
-            Embedded C on STM32 (Cortex-M0+), building FreeRTOS-based multitasking firmware with PWM
-            generation, interrupt-driven timer capture, and real-time UART telemetry.
+            single-cycle datapath, and control logic. I also built a <strong>traffic signal state machine</strong>
+            — first as a TTL breadboard circuit, then redesigned as a Verilog module in QSPICE with LED output
+            stages and full simulation verification. On the embedded side, I write in Embedded C on STM32
+            (Cortex-M0+), building FreeRTOS-based multitasking firmware with PWM generation, interrupt-driven
+            timer capture, and real-time UART telemetry.
           </p>
           <p class="about-body">
             My background spans <strong>digital logic design</strong>, RTL verification,
@@ -625,7 +625,7 @@
         <div class="skill-card" data-aos="fade-up" data-aos-delay="120"><div class="sk-icon">⏱️</div><div><div class="sk-name">FreeRTOS</div><div class="sk-type">RTOS</div></div></div>
         <div class="skill-card" data-aos="fade-up" data-aos-delay="160"><div class="sk-icon">📡</div><div><div class="sk-name">PWM · UART · I2C</div><div class="sk-type">peripherals</div></div></div>
         <div class="skill-card" data-aos="fade-up" data-aos-delay="200"><div class="sk-icon">⚡</div><div><div class="sk-name">C++ · Python</div>          <div class="sk-type">systems</div></div></div>
-        <div class="skill-card" data-aos="fade-up" data-aos-delay="240"><div class="sk-icon">📐</div><div><div class="sk-name">LTSpice · Oscilloscopes</div><div class="sk-type">bench / simulation</div></div></div>
+        <div class="skill-card" data-aos="fade-up" data-aos-delay="240"><div class="sk-icon">📐</div><div><div class="sk-name">LTSpice · QSPICE · Oscilloscopes</div><div class="sk-type">bench / simulation</div></div></div>
         <div class="skill-card" data-aos="fade-up" data-aos-delay="280"><div class="sk-icon">🔢</div><div><div class="sk-name">Digital Logic · Microarch</div><div class="sk-type">core knowledge</div></div></div>
         <div class="skill-card" data-aos="fade-up" data-aos-delay="320"><div class="sk-icon">🐙</div><div><div class="sk-name">Git / GitHub</div>  <div class="sk-type">vcs</div></div></div>
       </div>
@@ -717,8 +717,8 @@
           </div>
           <div class="card-body">
             <h3>Traffic Signal FSM</h3>
-            <p>TTL/Verilog finite state machine driving real indicators with custom clock and timing logic.</p>
-            <div class="tagz"><span>Verilog</span><span>TTL</span><span>Hardware</span></div>
+            <p>4-state FSM controlling a 4-way intersection with pedestrian walk button. Originally built as a TTL breadboard circuit, then redesigned as a Verilog module in QSPICE.</p>
+            <div class="tagz"><span>Verilog</span><span>QSPICE</span><span>RTL</span><span>Simulation</span></div>
             <div style="margin-top:14px;font-size:12px;color:var(--accent);font-family:'JetBrains Mono',monospace">View project →</div>
           </div>
         </a>
