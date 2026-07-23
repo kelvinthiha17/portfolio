@@ -150,14 +150,15 @@
   <section class="proj-hero">
     <div class="container">
       <a href="index.html" class="back-btn">← Back to Projects</a>
-      <div class="slabel">// Verilog · TTL · Hardware</div>
+      <div class="slabel">// Verilog · QSPICE · TTL · Hardware</div>
       <h1 class="proj-title">Traffic Signal <span class="gt">FSM</span></h1>
       <div class="proj-meta">
         <span class="tag">Verilog</span>
+        <span class="tag">QSPICE</span>
+        <span class="tag">RTL</span>
+        <span class="tag">Simulation</span>
         <span class="tag">TTL Logic</span>
-        <span class="tag">Hardware</span>
         <span class="tag">Finite State Machine</span>
-        <span class="tag">Breadboard</span>
       </div>
     </div>
   </section>
@@ -165,25 +166,23 @@
   <div class="proj-body">
     <div class="container">
       <p>
-        This project is a custom-built <strong>traffic signal controller</strong> implemented using a
-        TTL-based finite state machine. Designed and simulated in LTSpice and Tinkercad first, then wired
-        on a breadboard using discrete TTL logic gates — no microcontroller, no soldering, no custom PCB —
-        the system uses combinational and sequential logic to simulate red, yellow, and green traffic light
-        transitions. A clock pulse triggers state changes, mimicking real-world intersection behavior.
+        A <strong>4-state traffic signal controller</strong> for a Main Road and Cross Road intersection
+        with a pedestrian walk button. Originally built on a breadboard using discrete TTL logic gates
+        for Rutgers Digital Logic Lab, then redesigned from scratch as a Verilog module running inside
+        QSPICE with LED output stages and verified through simulation.
       </p>
 
-      <h2 class="section-h2">The <span class="gt">schematic</span></h2>
+      <h2 class="section-h2">The <span class="gt">breadboard build</span></h2>
       <p>
-        The full logic diagram: a 555 timer generates the clock, five 74LS74 D flip-flops act as the
-        state register, and a layer of AND-gate decode logic maps state combinations to the correct
-        red/yellow/green outputs on each of the two signal heads.
+        The original build used a 555 timer to generate the clock, 74LS74 D flip-flops for the state
+        register, and AND-gate decode logic mapping state combinations to the red/yellow/green outputs
+        on each signal head. Designed and simulated in LTSpice and Tinkercad first, then wired on a
+        breadboard — no microcontroller, no soldering, no custom PCB.
       </p>
       <div class="img-card" style="margin: 24px 0;">
         <img src="traffic-schematic.png" alt="Full TTL schematic: 555 timer clock, 74LS74 flip-flop state register, AND-gate decode logic" />
         <div class="img-caption">// full schematic — 555 timer + 74LS74 state register + decode logic</div>
       </div>
-
-      <h2 class="section-h2">The <span class="gt">hardware</span></h2>
 
       <div class="photo-grid">
         <div class="img-card">
@@ -196,24 +195,43 @@
         </div>
       </div>
 
+      <h2 class="section-h2">The <span class="gt">QSPICE redesign</span></h2>
+      <p>
+        The breadboard version had timing and wiring issues that were hard to debug in hardware, so I
+        rebuilt the whole design from scratch as a Verilog module inside QSPICE. The FSM uses a 2-bit
+        state register and a 4-bit counter for state timing, with an asynchronous reset that forces
+        the system into the default state on power-up. Six LED output stages (330Ω current-limiting
+        resistors plus LEDs) sit downstream of the FSM outputs.
+      </p>
+      <div class="img-card" style="margin: 24px 0;">
+        <img src="traffic-qspice.png" alt="QSPICE schematic with embedded Main Road and Cross Road waveforms" />
+        <div class="img-caption">// QSPICE schematic + simulation waveforms (Main Road + Cross Road)</div>
+      </div>
+
       <div class="highlight-box">
-        The FSM cycles through states — <strong>Red → Green → Yellow → Red</strong> — driven by a
-        custom clock circuit. Each state transition is encoded in TTL logic gates, with state registers
-        holding the current signal phase between clock edges.
+        <strong>State cycle:</strong> S0 (Main Green, waiting) → S1 (Main Amber, 4 cycles) →
+        S2 (Cross Green, 8 cycles) → S3 (Cross Amber, 4 cycles) → S0. Triggered by the pedestrian
+        walk button. Simulation clock scaled to 1 kHz so 1 ms of sim time represents 1 second of
+        real-world timing.
       </div>
 
       <p>
-        The project reinforced key concepts in <strong>digital electronics</strong>: timing diagrams,
-        state encoding, logic gate configuration, and the challenge of translating a Verilog state
-        machine into a physical TTL circuit.
+        Verified in simulation across the full cycle: state transitions land at exactly the right
+        clock edges, and every output drives its LED cleanly through the 330Ω resistor. The Verilog
+        source, QSPICE schematic, and compiled module are all on
+        <a href="https://github.com/kelvinthiha17/traffic-signal-fsm-qspice" style="color: var(--accent);">GitHub</a>.
       </p>
+
       <p>
-        This hands-on build bridged the gap between simulation and real hardware, deepening my
-        understanding of system-level control and physical circuit constraints.
+        This project taught me the difference between a design that <em>almost</em> works in hardware
+        and one that's actually verified in simulation before you touch a breadboard. Both sides —
+        the physical build and the simulated redesign — reinforced digital logic fundamentals: state
+        encoding, timing, and the gap between paper design and working circuits.
       </p>
+
       <p>
-        <strong>Technologies:</strong> Verilog HDL, 555 timer, 74LS74 D flip-flops, TTL logic gates,
-        breadboard prototyping, LTSpice, Tinkercad, finite state machine theory.
+        <strong>Technologies:</strong> Verilog HDL, QSPICE, 555 timer, 74LS74 D flip-flops, TTL logic
+        gates, breadboard prototyping, LTSpice, Tinkercad, finite state machine theory.
       </p>
     </div>
   </div>
