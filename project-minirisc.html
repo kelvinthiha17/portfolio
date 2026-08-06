@@ -69,6 +69,7 @@
     .proj-body p { color: var(--muted); font-size: 16px; line-height: 1.82; margin-bottom: 20px; }
     .proj-body strong { color: var(--ink); }
     .section-h2 { font-size: clamp(20px, 3vw, 28px); letter-spacing: -0.6px; margin: 48px 0 20px; }
+    .section-h3 { font-size: clamp(16px, 2.2vw, 19px); letter-spacing: -0.3px; margin: 32px 0 14px; color: var(--ink); }
 
     /* ===== ARCHITECTURE DIAGRAM ===== */
     .arch-diagram {
@@ -133,6 +134,9 @@
     .module-file { font-size: 11px; color: rgba(56,189,248,0.45); font-family: 'JetBrains Mono', monospace; margin-bottom: 10px; }
     .module-desc { font-size: 13px; color: var(--muted); line-height: 1.6; }
     .module-desc strong { color: var(--ink); }
+    .module-card.hazard { border-color: rgba(167,139,250,0.25); }
+    .module-card.hazard .module-name { color: var(--accent2); }
+    .module-card.hazard:hover { box-shadow: 0 0 18px rgba(167,139,250,0.18); }
 
     /* ===== INSTRUCTION FORMAT ===== */
     .instr-diagram {
@@ -179,6 +183,14 @@
       font-size: 12px; color: var(--muted);
     }
     .instr-example span { color: var(--accent); }
+    .instr-note {
+      margin-top: 12px; padding: 12px 14px;
+      background: rgba(167,139,250,0.06);
+      border: 1px solid rgba(167,139,250,0.2);
+      border-radius: 10px;
+      font-size: 12.5px; color: var(--muted); line-height: 1.6;
+    }
+    .instr-note strong { color: var(--ink); }
 
     /* ===== CODE BLOCKS ===== */
     .code-block {
@@ -240,6 +252,19 @@
     .op-name { color: var(--accent); }
     .op-expr { color: var(--accent3); }
 
+    /* ===== HAZARD LIST ===== */
+    .hazard-list { margin: 20px 0; display: flex; flex-direction: column; gap: 14px; }
+    .hazard-item {
+      background: var(--card); border: 1px solid rgba(167,139,250,0.2);
+      border-radius: 12px; padding: 16px 18px;
+    }
+    .hazard-title {
+      font-family: 'JetBrains Mono', monospace; font-size: 13px;
+      color: var(--accent2); font-weight: 500; margin-bottom: 6px;
+    }
+    .hazard-desc { font-size: 13.5px; color: var(--muted); line-height: 1.65; }
+    .hazard-desc strong { color: var(--ink); }
+
     /* ===== FOOTER ===== */
     .footer { border-top: 1px solid rgba(56,189,248,0.08); padding: 20px 0; text-align: center; color: var(--muted); font-size: 13px; font-family: 'JetBrains Mono', monospace; }
     .footer a { color: var(--accent); text-decoration: none; }
@@ -256,12 +281,14 @@
   <section class="proj-hero">
     <div class="container">
       <a href="index.html" class="back-btn">← Back to Projects</a>
-      <div class="slabel">// Verilog · RTL Design · CPU Architecture</div>
+      <div class="slabel">// Verilog · RTL Design · CPU Microarchitecture</div>
       <h1 class="proj-title">MiniRISC16 <span class="gt">Processor</span></h1>
       <div class="proj-meta">
         <span class="tag">Verilog</span>
         <span class="tag">RTL Design</span>
         <span class="tag">CPU Architecture</span>
+        <span class="tag">Pipelining</span>
+        <span class="tag">Hazard Detection</span>
         <span class="tag">Icarus Verilog</span>
         <span class="tag">GTKWave</span>
         <span class="tag">16-bit</span>
@@ -274,72 +301,76 @@
 
       <p>
         A fully functional <strong>16-bit RISC processor</strong> designed from scratch in Verilog.
-        The architecture follows a classic single-cycle datapath — each instruction completes in one clock
-        cycle, flowing through the program counter, instruction memory, decoder, register file, and ALU.
-        All modules were individually unit-tested and verified together using
-        <strong>Icarus Verilog</strong> simulation with <strong>GTKWave</strong> waveform analysis.
+        What started as a single-cycle datapath supporting only R-type ALU instructions was extended
+        with load/store and branch instructions, then redesigned as a <strong>5-stage pipelined
+        architecture</strong> (IF/ID/EX/MEM/WB) with full hazard handling — operand forwarding,
+        load-use stalling, and branch flushing. Every module was individually unit-tested, then
+        verified end-to-end with an integration testbench using <strong>Icarus Verilog</strong>
+        simulation and <strong>GTKWave</strong> waveform analysis.
       </p>
 
       <!-- Architecture Diagram -->
-      <h2 class="section-h2">// <span class="gt">architecture</span></h2>
+      <h2 class="section-h2">// <span class="gt">pipeline architecture</span></h2>
+      <p>Five stages, connected by four pipeline registers that latch control signals and data between clock cycles.</p>
 
       <div class="arch-diagram">
         <div class="arch-flow">
           <div class="arch-box">
-            <div class="arch-box-name">PC</div>
-            <div class="arch-box-sub">pc.v</div>
+            <div class="arch-box-name">IF</div>
+            <div class="arch-box-sub">pc.v, imem.v</div>
           </div>
           <div class="arch-arrow-wrap">
             <div class="arch-arrow">→</div>
-            <span class="arch-arrow-label">addr[15:0]</span>
+            <span class="arch-arrow-label">IF/ID reg</span>
           </div>
           <div class="arch-box">
-            <div class="arch-box-name">IMEM</div>
-            <div class="arch-box-sub">imem.v</div>
+            <div class="arch-box-name">ID</div>
+            <div class="arch-box-sub">decoder, control, regfile</div>
           </div>
           <div class="arch-arrow-wrap">
             <div class="arch-arrow">→</div>
-            <span class="arch-arrow-label">instr[15:0]</span>
+            <span class="arch-arrow-label">ID/EX reg</span>
           </div>
           <div class="arch-box">
-            <div class="arch-box-name">Decoder</div>
-            <div class="arch-box-sub">decoder.v</div>
+            <div class="arch-box-name">EX</div>
+            <div class="arch-box-sub">alu16.v, forwarding</div>
           </div>
           <div class="arch-arrow-wrap">
             <div class="arch-arrow">→</div>
-            <span class="arch-arrow-label">rs, rt, rd</span>
+            <span class="arch-arrow-label">EX/MEM reg</span>
           </div>
           <div class="arch-box">
-            <div class="arch-box-name">RegFile</div>
-            <div class="arch-box-sub">regfile8x16.v</div>
+            <div class="arch-box-name">MEM</div>
+            <div class="arch-box-sub">dmem.v, branch resolve</div>
           </div>
           <div class="arch-arrow-wrap">
             <div class="arch-arrow">→</div>
-            <span class="arch-arrow-label">a, b</span>
+            <span class="arch-arrow-label">MEM/WB reg</span>
           </div>
           <div class="arch-box">
-            <div class="arch-box-name">ALU</div>
-            <div class="arch-box-sub">alu16.v</div>
+            <div class="arch-box-name">WB</div>
+            <div class="arch-box-sub">writeback mux</div>
           </div>
         </div>
         <div class="arch-feedback">
           <div class="arch-feedback-line"></div>
-          <span>result writeback → rd</span>
+          <span>writeback data + branch target feed back to ID / IF</span>
           <div class="arch-feedback-line"></div>
         </div>
       </div>
 
       <!-- Module breakdown -->
+      <h3 class="section-h3">Core datapath modules</h3>
       <div class="module-grid">
         <div class="module-card">
           <div class="module-name">Program Counter</div>
           <div class="module-file">pc.v</div>
-          <div class="module-desc">Resets to <strong>0x0000</strong> on reset, increments by 1 each clock edge. Drives the instruction fetch address.</div>
+          <div class="module-desc">Resets to <strong>0x0000</strong> on reset. Supports a <strong>stall</strong> input (held during a load-use hazard) and a <strong>branch mux</strong> selecting between PC+1 and a resolved branch target.</div>
         </div>
         <div class="module-card">
           <div class="module-name">Instruction Memory</div>
           <div class="module-file">imem.v</div>
-          <div class="module-desc"><strong>256 × 16-bit</strong> ROM. Combinationally outputs the instruction at the address from the PC. Pre-loaded with a test program.</div>
+          <div class="module-desc"><strong>256 × 16-bit</strong> ROM. Combinationally outputs the instruction at the address from the PC.</div>
         </div>
         <div class="module-card">
           <div class="module-name">Instruction Decoder</div>
@@ -347,19 +378,67 @@
           <div class="module-desc">Splits the 16-bit instruction word into <strong>opcode</strong>, <strong>rd</strong>, <strong>rs</strong>, <strong>rt</strong>, and <strong>imm</strong> fields using bit slicing.</div>
         </div>
         <div class="module-card">
+          <div class="module-name">Control Unit</div>
+          <div class="module-file">control.v</div>
+          <div class="module-desc">Generates <strong>7 control signals</strong> (RegWrite, ALUSrc, MemRead, MemWrite, MemToReg, Branch, ALUOp) from the 4-bit opcode.</div>
+        </div>
+        <div class="module-card">
           <div class="module-name">Register File</div>
           <div class="module-file">regfile8x16.v</div>
-          <div class="module-desc"><strong>8 registers × 16 bits</strong>. Two combinational read ports (rs, rt). One synchronous write port (rd) — writes on positive clock edge.</div>
+          <div class="module-desc"><strong>8 registers × 16 bits</strong>. Write-first: if a register is written and read in the same cycle, the read returns the value being written instead of stale data.</div>
         </div>
         <div class="module-card">
           <div class="module-name">ALU</div>
           <div class="module-file">alu16.v</div>
-          <div class="module-desc">16-bit combinational ALU. Supports <strong>ADD, SUB, AND, OR, XOR</strong> selected by a 3-bit opcode. Includes a zero flag for future branch instructions.</div>
+          <div class="module-desc">16-bit combinational ALU. Supports <strong>ADD, SUB, AND, OR, XOR</strong>, with a zero flag used by BEQ.</div>
+        </div>
+        <div class="module-card">
+          <div class="module-name">Data Memory</div>
+          <div class="module-file">dmem.v</div>
+          <div class="module-desc">Word-addressed data memory for <strong>LW</strong> / <strong>SW</strong>. Synchronous write, combinational read.</div>
         </div>
         <div class="module-card">
           <div class="module-name">Top-Level CPU</div>
           <div class="module-file">cpu.v</div>
-          <div class="module-desc">Wires all five modules together. ALU result feeds directly back into the register file write port — single-cycle, no pipeline stalls.</div>
+          <div class="module-desc">Wires all 13 modules together across the 5 pipeline stages, including the hazard and forwarding logic below.</div>
+        </div>
+      </div>
+
+      <h3 class="section-h3">Pipeline registers</h3>
+      <div class="module-grid">
+        <div class="module-card">
+          <div class="module-name">IF/ID</div>
+          <div class="module-file">if_id_reg.v</div>
+          <div class="module-desc">Latches the fetched instruction and PC+1. Supports <strong>stall</strong> (hold) and <strong>flush</strong> (clear to a bubble on a taken branch).</div>
+        </div>
+        <div class="module-card">
+          <div class="module-name">ID/EX</div>
+          <div class="module-file">id_ex_reg.v</div>
+          <div class="module-desc">Latches control signals, register data, rs/rt/rd, and the immediate for the execute stage. Control inputs are bubbled on stall or flush.</div>
+        </div>
+        <div class="module-card">
+          <div class="module-name">EX/MEM</div>
+          <div class="module-file">ex_mem_reg.v</div>
+          <div class="module-desc">Latches the ALU result, zero flag, store data, and branch target for the memory stage. Bubbled on branch flush.</div>
+        </div>
+        <div class="module-card">
+          <div class="module-name">MEM/WB</div>
+          <div class="module-file">mem_wb_reg.v</div>
+          <div class="module-desc">Latches the memory read data and ALU result for the writeback mux.</div>
+        </div>
+      </div>
+
+      <h3 class="section-h3">Hazard handling</h3>
+      <div class="module-grid">
+        <div class="module-card hazard">
+          <div class="module-name">Hazard Unit</div>
+          <div class="module-file">hazard_unit.v</div>
+          <div class="module-desc">Detects <strong>load-use hazards</strong>: if EX holds a LW whose destination matches an ID-stage source register, stalls the pipeline for exactly one cycle.</div>
+        </div>
+        <div class="module-card hazard">
+          <div class="module-name">Forward Unit</div>
+          <div class="module-file">forward_unit.v</div>
+          <div class="module-desc">Forwards <strong>EX/MEM → EX</strong> and <strong>MEM/WB → EX</strong> results so most back-to-back dependent instructions execute with zero stalls. EX/MEM takes priority as the more recent result.</div>
         </div>
       </div>
 
@@ -399,7 +478,13 @@
         </div>
         <div class="instr-example">
           Example: <span>0000_011_001_010_000</span> → ADD R3, R1, R2 &nbsp;|&nbsp;
-          <span>0001_001_000_000101</span> → ADDI R1, R0, 5
+          <span>1000_001_000_001010</span> → LW R1, 10(R0)
+        </div>
+        <div class="instr-note">
+          <strong>Design constraint:</strong> since <code>rt</code> and <code>imm</code> physically
+          share the same bits, LW uses the full 6-bit immediate (it doesn't need <code>rt</code>),
+          while SW and BEQ — which need <code>rt</code> as a real register — only get a 3-bit signed
+          immediate (<strong>-4 to +3</strong>) instead.
         </div>
       </div>
 
@@ -435,7 +520,8 @@
     <span class="io">input</span>  <span class="kw">wire</span> [<span class="num">15</span>:<span class="num">0</span>] a,
     <span class="io">input</span>  <span class="kw">wire</span> [<span class="num">15</span>:<span class="num">0</span>] b,
     <span class="io">input</span>  <span class="kw">wire</span> [<span class="num">2</span>:<span class="num">0</span>]  alu_op,
-    <span class="io">output</span> <span class="kw">reg</span>  [<span class="num">15</span>:<span class="num">0</span>] result
+    <span class="io">output</span> <span class="kw">reg</span>  [<span class="num">15</span>:<span class="num">0</span>] result,
+    <span class="io">output</span> <span class="kw">wire</span>        zero
 );
     <span class="kw">always</span> @(*) <span class="kw">begin</span>
         <span class="kw">case</span>(alu_op)
@@ -447,26 +533,7 @@
             <span class="kw">default</span>: result = <span class="num">16'b0</span>;
         <span class="kw">endcase</span>
     <span class="kw">end</span>
-<span class="kw">endmodule</span></pre>
-      </div>
-
-      <!-- Code: Decoder -->
-      <div class="code-block">
-        <div class="code-header">
-          <span class="code-filename">decoder.v</span>
-          <div class="code-dots"><div class="code-dot cd-r"></div><div class="code-dot cd-y"></div><div class="code-dot cd-g"></div></div>
-        </div>
-        <pre><span class="kw">module</span> <span class="fn">decoder</span>(
-    <span class="io">input</span>  <span class="kw">wire</span> [<span class="num">15</span>:<span class="num">0</span>] instruction,
-    <span class="io">output</span> <span class="kw">wire</span> [<span class="num">3</span>:<span class="num">0</span>]  opcode,
-    <span class="io">output</span> <span class="kw">wire</span> [<span class="num">2</span>:<span class="num">0</span>]  rd, rs, rt,
-    <span class="io">output</span> <span class="kw">wire</span> [<span class="num">5</span>:<span class="num">0</span>]  imm
-);
-    <span class="kw">assign</span> opcode = instruction[<span class="num">15</span>:<span class="num">12</span>]; <span class="cm">// bits 15–12 → opcode</span>
-    <span class="kw">assign</span> rd     = instruction[<span class="num">11</span>:<span class="num">9</span>];  <span class="cm">// bits 11–9  → destination reg</span>
-    <span class="kw">assign</span> rs     = instruction[<span class="num">8</span>:<span class="num">6</span>];   <span class="cm">// bits 8–6   → source reg 1</span>
-    <span class="kw">assign</span> rt     = instruction[<span class="num">5</span>:<span class="num">3</span>];   <span class="cm">// bits 5–3   → source reg 2</span>
-    <span class="kw">assign</span> imm    = instruction[<span class="num">5</span>:<span class="num">0</span>];   <span class="cm">// bits 5–0   → immediate</span>
+    <span class="kw">assign</span> zero = (result == <span class="num">16'b0</span>); <span class="cm">// used by BEQ</span>
 <span class="kw">endmodule</span></pre>
       </div>
 
@@ -476,56 +543,64 @@
           <span class="code-filename">regfile8x16.v</span>
           <div class="code-dots"><div class="code-dot cd-r"></div><div class="code-dot cd-y"></div><div class="code-dot cd-g"></div></div>
         </div>
-        <pre><span class="cm">// 8 registers × 16 bits</span>
-<span class="kw">module</span> <span class="fn">regfile8x16</span>( clk, reg_write, rs, rt, rd, write_data,
+        <pre><span class="cm">// 8 registers × 16 bits, write-first same-cycle bypass</span>
+<span class="kw">module</span> <span class="fn">regfile8x16</span>( clk, reset, reg_write, rs, rt, rd, write_data,
                      read_data1, read_data2 );
 
     <span class="kw">reg</span> [<span class="num">15</span>:<span class="num">0</span>] registers [<span class="num">7</span>:<span class="num">0</span>];
 
-    <span class="cm">// Combinational reads — instant, no clock needed</span>
-    <span class="kw">assign</span> read_data1 = registers[rs];
-    <span class="kw">assign</span> read_data2 = registers[rt];
+    <span class="cm">// if this cycle writes the register we're reading, forward the</span>
+    <span class="cm">// write value directly -- needed because a pipelined WB write and</span>
+    <span class="cm">// a later instruction's ID read can land in the same cycle</span>
+    <span class="kw">assign</span> read_data1 = (reg_write &amp;&amp; (rd == rs)) ? write_data : registers[rs];
+    <span class="kw">assign</span> read_data2 = (reg_write &amp;&amp; (rd == rt)) ? write_data : registers[rt];
 
-    <span class="cm">// Synchronous write — only on rising clock edge</span>
-    <span class="kw">always</span> @(<span class="kw">posedge</span> clk) <span class="kw">begin</span>
-        <span class="kw">if</span> (reg_write)
+    <span class="kw">always</span> @(<span class="kw">posedge</span> clk <span class="kw">or</span> <span class="kw">posedge</span> reset) <span class="kw">begin</span>
+        <span class="kw">if</span> (reset)
+            <span class="cm">// clear all 8 registers</span>
+        <span class="kw">else</span> <span class="kw">if</span> (reg_write)
             registers[rd] <= write_data;
     <span class="kw">end</span>
 <span class="kw">endmodule</span></pre>
       </div>
 
-      <!-- Code: Top-level -->
-      <div class="code-block">
-        <div class="code-header">
-          <span class="code-filename">cpu.v — top-level wiring</span>
-          <div class="code-dots"><div class="code-dot cd-r"></div><div class="code-dot cd-y"></div><div class="code-dot cd-g"></div></div>
+      <!-- Hazard handling detail -->
+      <h2 class="section-h2">// <span class="gt">pipeline hazard handling</span></h2>
+      <div class="hazard-list">
+        <div class="hazard-item">
+          <div class="hazard-title">Forwarding</div>
+          <div class="hazard-desc"><strong>EX/MEM → EX</strong> and <strong>MEM/WB → EX</strong>, so most back-to-back ALU-dependent instructions execute with zero stall cycles.</div>
         </div>
-        <pre><span class="cm">// All five modules wired together</span>
-<span class="fn">pc</span>          pc_unit   ( .clk(clk), .reset(reset), .pc_out(pc_out) );
-<span class="fn">imem</span>        imem_unit ( .addr(pc_out), .instruction(instruction) );
-<span class="fn">decoder</span>     dec_unit  ( .instruction(instruction), .opcode(alu_op),
-                        .rd(rd), .rs(rs), .rt(rt) );
-<span class="fn">regfile8x16</span> rf_unit   ( .clk(clk), .rs(rs), .rt(rt), .rd(rd),
-                        .write_data(alu_result), .reg_write(<span class="num">1'b1</span>),
-                        .read_data1(reg_data1), .read_data2(reg_data2) );
-<span class="fn">alu16</span>       alu_unit  ( .a(reg_data1), .b(reg_data2),
-                        .alu_op(alu_op), .result(alu_result) );</pre>
+        <div class="hazard-item">
+          <div class="hazard-title">Load-use stalling</div>
+          <div class="hazard-desc">A load's result isn't ready until the end of MEM, so forwarding alone can't fix <strong>LW</strong> immediately followed by an instruction that needs the loaded value. The hazard unit detects this and inserts exactly one stall cycle, after which MEM/WB forwarding supplies the value.</div>
+        </div>
+        <div class="hazard-item">
+          <div class="hazard-title">Branch flushing</div>
+          <div class="hazard-desc">Branches resolve in the MEM stage, so by the time a taken branch is detected, 3 wrong-path instructions have already been fetched into IF/ID, ID/EX, and EX/MEM. All three are flushed to bubbles the same cycle the branch resolves.</div>
+        </div>
+        <div class="hazard-item">
+          <div class="hazard-title">Same-cycle write/read race</div>
+          <div class="hazard-desc">A writeback and a later instruction's register-file read can land in the exact same clock cycle — a case the EX-stage forwarding paths don't cover, since it happens one stage earlier at the ID read. Solved with the write-first register file above.</div>
+        </div>
       </div>
 
       <!-- Verification -->
       <h2 class="section-h2">// <span class="gt">testing & verification</span></h2>
       <p>
-        Each module has its own testbench. The ALU testbench exercises all five operations including a
-        <strong>SUB zero case</strong> (7 − 7 = 0) to verify the zero flag. The register file testbench
-        checks concurrent read/write behaviour — writing to R4 and R2 while simultaneously reading both
-        ports. The top-level <code style="font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--accent)">cpu_tb.v</code>
-        runs a full instruction sequence through the assembled datapath and dumps a <strong>VCD waveform</strong>
-        for analysis in GTKWave.
+        Every module has its own testbench, verified independently before integration: the ALU
+        testbench covers all 5 operations plus the zero flag, the hazard unit and forwarding unit
+        each have dedicated testbenches proving correct stall/forward decisions in isolation, and
+        the control unit and data memory are each checked against every opcode and a read/write
+        round trip.
       </p>
       <p>
-        The test program encoded in instruction memory executes: <strong>ADDI R1, R0, 5</strong> →
-        <strong>ADDI R2, R0, 3</strong> → <strong>ADD R3, R1, R2</strong> → <strong>SUB R4, R3, R2</strong>,
-        verifying the full fetch-decode-execute path from PC through writeback.
+        The top-level <code style="font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--accent)">cpu_tb.v</code>
+        runs a <strong>tight, back-to-back program</strong> — no manual NOPs — that deliberately
+        triggers a load-use hazard on a store, a load-use hazard feeding an ALU op, back-to-back
+        ALU-to-ALU forwarding into a branch, and a taken branch with 3 wrong-path instructions
+        correctly flushed. This confirms the hazard hardware works under real pipeline pressure,
+        not just in isolation, and dumps a <strong>VCD waveform</strong> for analysis in GTKWave.
       </p>
 
     </div>
